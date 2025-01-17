@@ -1,7 +1,15 @@
 <script lang="ts">
-    import { afterUpdate } from "svelte";
+    import {afterUpdate, getContext} from "svelte";
     import {settingsService} from "@/module/settings/settings-service";
+    import {Context} from "@/types/context";
+
     let globalSettingElementFold = true;
+
+    const i18n = getContext(Context.I18N);
+
+    $: {
+        afterUpdate(afterRender);
+    }
 
     let widgetSettingDto = {
         ...settingsService.widgetSettingDto,
@@ -20,7 +28,7 @@
     function handleKeyDownDefault() {}
 
     function setFrameHeight() {
-        let contentHeight = document.getElementById("app").offsetHeight + 20;
+        let contentHeight = document.getElementById("widget").offsetHeight + 20;
         if (settingsService.widgetCollapsed) {
             contentHeight =
                 document.getElementById("top-navigation-bar").offsetHeight + 20;
@@ -31,9 +39,6 @@
         let frameElement = window.frameElement as HTMLElement;
         frameElement.style.height = contentHeight + "px";
         frameElement.style.width = "2048px";
-    }
-    $: {
-        afterUpdate(afterRender);
     }
 
     function afterRender() {
@@ -47,10 +52,10 @@
 <div class="flex_center" style="display:flex;flex-wrap: wrap;">
     <div class="flex_center">
         <h2 class="fn__flex flex_center" style="flex-basis: 100%;">
-            当前挂件设置
+            {i18n.currentWidgetSettings}
         </h2>
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">目标块：</div>
+            <div class="fn__flex-1">{i18n.targetBlock}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-text-field b3-text-field--text fn__flex-center"
@@ -59,7 +64,7 @@
         </div>
 
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">列数：</div>
+            <div class="fn__flex-1">{i18n.columns}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-text-field b3-text-field--text fn__flex-center"
@@ -73,7 +78,7 @@
         </div>
 
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">过滤空值：</div>
+            <div class="fn__flex-1">{i18n.hideNullProperties}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-switch fn__flex-center"
@@ -82,7 +87,7 @@
             />
         </div>
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">自动折叠：</div>
+            <div class="fn__flex-1">{i18n.openDocCollapsed}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-switch fn__flex-center"
@@ -92,7 +97,7 @@
         </div>
 
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">显示内置属性：</div>
+            <div class="fn__flex-1">{i18n.showBuiltInProperties}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-switch fn__flex-center"
@@ -102,7 +107,7 @@
         </div>
 
         <div class="fn__flex div_bottom">
-            <div class="fn__flex-1">显示自定义属性：</div>
+            <div class="fn__flex-1">{i18n.showCustomProperties}：</div>
             <span class="fn__space"></span>
             <input
                 class="b3-switch fn__flex-center"
@@ -112,7 +117,7 @@
         </div>
 
         <div class="flex_center" style="flex-basis: 100%;">
-            <button class="b3-button" on:click={clickSaveButton}>保存</button>
+            <button class="b3-button" on:click={clickSaveButton}>{i18n.save}</button>
         </div>
     </div>
 
@@ -126,7 +131,7 @@
                 globalSettingElementFold = !globalSettingElementFold;
             }}
         >
-            全局设置
+            {i18n.globalSettings}
             <span class="block__icon block__icon--show">
                 <svg
                     id="globalSettingSvg"
@@ -139,19 +144,19 @@
         </h2>
         {#if !globalSettingElementFold}
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">读取块ID方式：</div>
+                <div class="fn__flex-1">{i18n.targetMethod}：</div>
                 <span class="fn__space"></span>
                 <select
                     class="b3-select fn__flex-center fn__size200"
                     bind:value={widgetGlobakSettingDto.defaultGetTargetBlockMethod}
                 >
-                    <option value="RootBlock">当前文档块</option>
-                    <option value="PreviousBlock">挂件上方块</option>
-                    <option value="NextBlock">挂件下方块</option>
+                    <option value="RootBlock">{i18n.targetCurrentBlock}</option>
+                    <option value="PreviousBlock">{i18n.targetPreviousBlock}</option>
+                    <option value="NextBlock">{i18n.targetNextBlock}</option>
                 </select>
             </div>
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">默认列数：</div>
+                <div class="fn__flex-1">{i18n.defaultNumberOfColumns}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-text-field b3-text-field--text fn__flex-center"
@@ -164,7 +169,7 @@
                 />
             </div>
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">默认过滤空值：</div>
+                <div class="fn__flex-1">{i18n.hideNullPropertiesByDefault}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-switch fn__flex-center"
@@ -173,7 +178,7 @@
                 />
             </div>
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">默认折叠：</div>
+                <div class="fn__flex-1">{i18n.collapseByDefault}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-switch fn__flex-center"
@@ -183,7 +188,7 @@
             </div>
 
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">默认显示内置属性：</div>
+                <div class="fn__flex-1">{i18n.showBuiltInPropertiesByDefault}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-switch fn__flex-center"
@@ -193,7 +198,7 @@
             </div>
 
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">默认显示自定义属性：</div>
+                <div class="fn__flex-1">{i18n.showCustomPropertiesByDefault}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-switch fn__flex-center"
@@ -202,7 +207,7 @@
                 />
             </div>
             <div class="fn__flex div_bottom">
-                <div class="fn__flex-1">使用第三方主题样式：</div>
+                <div class="fn__flex-1">{i18n.useThirdPartyThemeStyles}：</div>
                 <span class="fn__space"></span>
                 <input
                     class="b3-switch fn__flex-center"

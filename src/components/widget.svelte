@@ -2,7 +2,7 @@
     import BlockDatabaseViewSvelte from "@/components/view/block-database-view.svelte";
     import BlockBuiltInAttrViewSvelte from "@/components/view/block-built-in-attr-view.svelte";
     import BlockCustomAttrViewSvelte from "@/components/view/block-custom-attr-view.svelte";
-    import { afterUpdate, onMount } from "svelte";
+    import {afterUpdate, onMount, setContext} from "svelte";
     import SettingView from "./view/setting-view.svelte";
     import {getAttributeViewKeys} from "@/api";
     import {TabType} from "@/types/tab-type";
@@ -10,6 +10,10 @@
     import {settingsService} from "@/module/settings/settings-service";
     import {refreshCssLink} from "@/utils/htmlUtil";
     import {processAttributeData} from "@/services/block-database";
+    import {openRefLink} from "@/utils/ref-util";
+    import {type I18N} from "@/types/i18n";
+
+    export let i18n: I18N;
 
     let allTableDtoMap: Map<string, AttributeTable> = new Map();
     let selectTableDto: AttributeTable;
@@ -23,7 +27,9 @@
         init();
     });
 
-    // 当发生变化时重新渲染，并在渲染完成后执行afterRender函数
+    setContext("i18n", i18n);
+
+    // Re-render when changes occur and execute the afterRender function when rendering is complete
     $: {
         afterUpdate(afterRender);
     }
@@ -167,7 +173,7 @@
             settingsService.update(settingsService.widgetSettingDto);
             refreshBlockAttributeData();
             setTimeout(() => {
-                avTabClickCount = 0; // 重置计数
+                avTabClickCount = 0; // reset count
             }, 210);
         }
         if (
@@ -176,45 +182,46 @@
             event.altKey ||
             avTabClickCount === 2
         ) {
-            let dto: AttributeTableDto = allTableDtoMap.get(avId);
+            let dto: AttributeTable = allTableDtoMap.get(avId);
             let blockId = dto.blockIds[0];
-            // 打开存在该数据库的节点
+            // Open the node where the database exists
             openRefLink(event, blockId);
-            avTabClickCount = 0; // 重置计数
+            avTabClickCount = 0; // reset count
         }
     }
 
-    function handleKeyDownDefault() {}
+    function handleKeyDownDefault() {
+    }
 </script>
 
 <div class="fn__flex">
     <ul id="top-navigation-bar" class="fn__flex layout-tab-bar">
         <li
-            class="item"
-            on:mousedown={(event) => {
+                class="item"
+                on:mousedown={(event) => {
                 let clickElement = event.currentTarget;
                 let className = "item--focus";
                 clickElement.classList.add(className);
             }}
-            on:keydown={handleKeyDownDefault}
-            on:click={(event) => {
+                on:keydown={handleKeyDownDefault}
+                on:click={(event) => {
                 clickTab(event, TabType.REFRESH_TAB);
             }}
         >
             <span class="block__icon block__icon--show">
                 <svg><use xlink:href="#iconRefresh"></use></svg>
             </span>
-            <span class="item__text" style="padding-left:0px;">刷新</span>
+            <span class="item__text" style="padding-left:0px;">{i18n.refresh}</span>
         </li>
         <li
-            class="item"
-            on:mousedown={(event) => {
+                class="item"
+                on:mousedown={(event) => {
                 let clickElement = event.currentTarget;
                 let className = "item--focus";
                 clickElement.classList.add(className);
             }}
-            on:keydown={handleKeyDownDefault}
-            on:click={(event) => {
+                on:keydown={handleKeyDownDefault}
+                on:click={(event) => {
                 clickTab(event, TabType.COLLAPSED_TAB);
             }}
         >
@@ -222,56 +229,56 @@
                 <span class="block__icon block__icon--show">
                     <svg><use xlink:href="#iconExpand"></use></svg>
                 </span>
-                <span class="item__text" style="padding-left:0px;">展开</span>
+                <span class="item__text" style="padding-left:0px;">{i18n.expand}</span>
             {:else}
                 <span class="block__icon block__icon--show">
                     <svg><use xlink:href="#iconContract"></use></svg>
                 </span>
-                <span class="item__text" style="padding-left:0px;">折叠</span>
+                <span class="item__text" style="padding-left:0px;">{i18n.collapse}</span>
             {/if}
         </li>
         <li
-            class="item {selectTabType == TabType.SETTINGS_TAB
+                class="item {selectTabType == TabType.SETTINGS_TAB
                 ? 'item--focus'
                 : ''}"
-            on:click={(event) => {
+                on:click={(event) => {
                 clickTab(event, TabType.SETTINGS_TAB);
             }}
-            on:keydown={handleKeyDownDefault}
+                on:keydown={handleKeyDownDefault}
         >
             <span class="block__icon block__icon--show">
                 <svg><use xlink:href="#iconSettings"></use></svg>
             </span>
-            <span class="item__text" style="padding-left:0px;">设置</span>
+            <span class="item__text" style="padding-left:0px;">{i18n.setup}</span>
         </li>
 
         <li class="vertical-separator"></li>
 
         {#if showBuiltInAttr}
             <li
-                class="item {selectTabType == TabType.BUILT_IN_ATTR_TAB
+                    class="item {selectTabType == TabType.BUILT_IN_ATTR_TAB
                     ? 'item--focus'
                     : ''}"
-                on:click={(event) => {
+                    on:click={(event) => {
                     clickTab(event, TabType.BUILT_IN_ATTR_TAB);
                 }}
-                on:keydown={handleKeyDownDefault}
+                    on:keydown={handleKeyDownDefault}
             >
-                <span class="item__text">内置属性</span>
+                <span class="item__text">{i18n.builtInProperties}</span>
             </li>
         {/if}
 
         {#if showCustomAttr}
             <li
-                class="item {selectTabType == TabType.CUSTOM_ATTR_TAB
+                    class="item {selectTabType == TabType.CUSTOM_ATTR_TAB
                     ? 'item--focus'
                     : ''}"
-                on:click={(event) => {
+                    on:click={(event) => {
                     clickTab(event, TabType.CUSTOM_ATTR_TAB);
                 }}
-                on:keydown={handleKeyDownDefault}
+                    on:keydown={handleKeyDownDefault}
             >
-                <span class="item__text">自定义属性</span>
+                <span class="item__text">{i18n.customProperties}</span>
             </li>
         {/if}
 
@@ -281,14 +288,14 @@
 
         {#each Array.from(allTableDtoMap) as [key, item]}
             <li
-                class="item {selectTabType == TabType.DATABASE_ATTR_TAB &&
+                    class="item {selectTabType == TabType.DATABASE_ATTR_TAB &&
                 selectAttributeTabId == key
                     ? 'item--focus'
                     : ''} "
-                on:click={(event) => {
+                    on:click={(event) => {
                     clickAttributeTab(event, TabType.DATABASE_ATTR_TAB, key);
                 }}
-                on:keydown={handleKeyDownDefault}
+                    on:keydown={handleKeyDownDefault}
             >
                 <span class="item__text">{item.avName}</span>
             </li>
@@ -297,18 +304,18 @@
 </div>
 <div id="main-content-container">
     {#if !settingsService.widgetCollapsed}
-        {#if selectTabType == TabType.SETTINGS_TAB}
-            <SettingView />
+        {#if selectTabType === TabType.SETTINGS_TAB}
+            <SettingView/>
         {/if}
-        {#if selectTabType == TabType.BUILT_IN_ATTR_TAB}
-            <BlockBuiltInAttrViewSvelte />
+        {#if selectTabType === TabType.BUILT_IN_ATTR_TAB}
+            <BlockBuiltInAttrViewSvelte/>
         {/if}
-        {#if selectTabType == TabType.CUSTOM_ATTR_TAB}
-            <BlockCustomAttrViewSvelte />
+        {#if selectTabType === TabType.CUSTOM_ATTR_TAB}
+            <BlockCustomAttrViewSvelte/>
         {/if}
 
-        {#if selectTabType == TabType.DATABASE_ATTR_TAB && selectTableDto}
-            <BlockDatabaseViewSvelte tableDto={selectTableDto} />
+        {#if selectTabType === TabType.DATABASE_ATTR_TAB && selectTableDto}
+            <BlockDatabaseViewSvelte tableDto={selectTableDto}/>
         {/if}
     {/if}
 </div>
@@ -319,6 +326,7 @@
         height: 30px; /* 设置分割线的高度 */
         margin: 0 10px; /* 设置左右间距 */
     }
+
     #top-navigation-bar {
         height: 45px;
     }

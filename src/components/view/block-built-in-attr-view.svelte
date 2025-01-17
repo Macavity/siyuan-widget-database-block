@@ -70,7 +70,7 @@
     }
 
     function setFrameHeight() {
-        let contentHeight = document.getElementById("app").offsetHeight + 20;
+        let contentHeight = document.getElementById("widget").offsetHeight + 20;
         if (settingsService.widgetCollapsed) {
             contentHeight =
                 document.getElementById("top-navigation-bar").offsetHeight + 20;
