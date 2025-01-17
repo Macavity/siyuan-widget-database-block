@@ -6,13 +6,19 @@
  * API 文档见 [API_zh_CN.md](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
  */
 
-import { fetchPost, fetchSyncPost, IWebSocketData } from "siyuan";
-
+// import {IWebSocketData} from "siyuan";
 
 export async function request(url: string, data: any) {
-    let response: IWebSocketData = await fetchSyncPost(url, data);
-    let res = response.code === 0 ? response.data : null;
-    return res;
+    let responseData = await fetch(url, {
+        body: JSON.stringify(data),
+        method: 'POST',
+        headers: {
+            Authorization: `Token `,
+        }
+    });
+    let resData = await responseData.json();
+
+    return resData.code === 0 ? resData.data : null;
 }
 
 
@@ -269,6 +275,25 @@ export async function transferBlockRef(fromID: BlockId, toID: BlockId, refIDs: B
     return request(url, data);
 }
 
+// **************************************** localStorage ****************************************
+
+export async function setStorageVal(key: string, val: any) {
+    let data = {
+        app: Math.random().toString(36).substring(8),
+        key,
+        val,
+    };
+    return request('/api/storage/setLocalStorageVal', data);
+
+};
+
+
+export async function getLocalStorage(): Promise<{ [key: string]: any }> {
+
+    return request('/api/storage/getLocalStorage', null);
+
+};
+
 // **************************************** Attributes ****************************************
 export async function setBlockAttrs(id: BlockId, attrs: { [key: string]: string }) {
     let data = {
@@ -279,6 +304,13 @@ export async function setBlockAttrs(id: BlockId, attrs: { [key: string]: string 
     return request(url, data);
 }
 
+export async function getAttributeViewKeys(id: BlockId): Promise<AttributeView[]> {
+    const data = {
+        id: id,
+    };
+    const url = "/api/av/getAttributeViewKeys";
+    return request(url, data);
+}
 
 export async function getBlockAttrs(id: BlockId): Promise<{ [key: string]: string }> {
     let data = {
@@ -324,15 +356,15 @@ export async function renderSprig(template: string): Promise<string> {
 // **************************************** File ****************************************
 
 export async function getFile(path: string): Promise<any> {
-    let data = {
-        path: path
-    }
-    let url = '/api/file/getFile';
-    return new Promise((resolve, _) => {
-        fetchPost(url, data, (content: any) => {
-            resolve(content)
-        });
-    });
+    // let data = {
+    //     path: path
+    // }
+    // let url = '/api/file/getFile';
+    // return new Promise((resolve, _) => {
+    //     fetchPost(url, data, (content: any) => {
+    //         resolve(content)
+    //     });
+    // });
 }
 
 
