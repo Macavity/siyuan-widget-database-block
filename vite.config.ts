@@ -23,7 +23,7 @@ console.log("NODE_ENV:       ", process.env.NODE_ENV);
 console.log("PLUGIN_VERSION: ", getVersion());
 
 function getVersion(): string {
-    const pluginJsonPath = path.resolve(__dirname, "plugin.json");
+    const pluginJsonPath = path.resolve(__dirname, "widget.json");
     const pluginJson = JSON.parse(fs.readFileSync(pluginJsonPath, "utf-8"));
     return pluginJson.version;
 }
@@ -32,6 +32,7 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": resolve(__dirname, "src"),
+            "siyuan-app": resolve(__dirname, "node_modules/siyuan-app"),
         }
     },
 
