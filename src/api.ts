@@ -6,7 +6,8 @@
  * API 文档见 [API_zh_CN.md](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
  */
 
-import { fetchPost, fetchSyncPost, IWebSocketData } from "siyuan";
+import {IWebSocketData} from "siyuan";
+import { fetchPost,fetchSyncPost } from "siyuan-app/app/src/util/fetch";
 
 
 export async function request(url: string, data: any) {
@@ -269,6 +270,25 @@ export async function transferBlockRef(fromID: BlockId, toID: BlockId, refIDs: B
     return request(url, data);
 }
 
+// **************************************** localStorage ****************************************
+
+export async function setStorageVal(key: string, val: any) {
+    let data = {
+        app: Math.random().toString(36).substring(8),
+        key,
+        val,
+    };
+    return request('/api/storage/setLocalStorageVal', data);
+
+};
+
+
+export async function getLocalStorage(): Promise<{ [key: string]: any }> {
+
+    return request('/api/storage/getLocalStorage', null);
+
+};
+
 // **************************************** Attributes ****************************************
 export async function setBlockAttrs(id: BlockId, attrs: { [key: string]: string }) {
     let data = {
@@ -279,6 +299,13 @@ export async function setBlockAttrs(id: BlockId, attrs: { [key: string]: string 
     return request(url, data);
 }
 
+export async function getAttributeViewKeys(id: BlockId): Promise<AttributeView[]> {
+    const data = {
+        id: id,
+    };
+    const url = "/api/av/getAttributeViewKeys";
+    return request(url, data);
+}
 
 export async function getBlockAttrs(id: BlockId): Promise<{ [key: string]: string }> {
     let data = {

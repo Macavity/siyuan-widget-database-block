@@ -46,6 +46,7 @@ export default defineConfig({
 
         viteStaticCopy({
             targets: [
+                { src: "src/index.html", dest: "./" },
                 { src: "./README*.md", dest: "./" },
                 { src: "./widget.json", dest: "./" },
                 { src: "./preview.png", dest: "./" },
@@ -81,7 +82,8 @@ export default defineConfig({
                             const files = await fg([
                                 'public/i18n/**',
                                 './README*.md',
-                                './widget.json'
+                                './widget.json',
+                                'src/index.html'
                             ]);
                             for (let file of files) {
                                 this.addWatchFile(file);
@@ -102,7 +104,7 @@ export default defineConfig({
                 ])
             ],
 
-            external: ["siyuan", "process"],
+            external: ["process","siyuan", "electron"],
 
             output: {
                 entryFileNames: "[name].js",

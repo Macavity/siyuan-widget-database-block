@@ -63,3 +63,33 @@ interface IResExportResources {
     path: string;
 }
 
+interface AVKey {
+    type: TAVCol;
+    name: string;
+    icon: string;
+    id: string;
+    options?: {
+        name: string;
+        color: string;
+    };
+}
+
+interface AVValue {
+    keyID: string;
+    id: string;
+    blockID: string;
+    // eslint-disable-next-line
+    type: any;
+}
+
+interface AVKeyAndValues {
+    key: AVKey;
+    values: AVValue[];
+}
+
+interface AttributeView {
+    keyValues: AVKeyAndValues[];
+    blockIDs: string[];
+    avID: string;
+    avName: string;
+}
