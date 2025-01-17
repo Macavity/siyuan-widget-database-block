@@ -1,4 +1,5 @@
 import { resolve } from "path"
+import fs from "fs";
 import { defineConfig, loadEnv } from "vite"
 import { viteStaticCopy } from "vite-plugin-static-copy"
 import livereload from "rollup-plugin-livereload"
@@ -7,16 +8,25 @@ import zipPack from "vite-plugin-zip-pack";
 import fg from 'fast-glob';
 
 import vitePluginYamlI18n from './yaml-plugin';
+import path from "node:path";
 
 const env = process.env;
-const isSrcmap = env.VITE_SOURCEMAP === 'inline';
+const isSourceMap = env.VITE_SOURCEMAP === 'inline';
 const isDev = env.NODE_ENV === 'development';
+const isProdBuild = process.env.NODE_ENV === "production";
 
 const outputDir = isDev ? "dev" : "dist";
 
-console.log("isDev=>", isDev);
-console.log("isSrcmap=>", isSrcmap);
-console.log("outputDir=>", outputDir);
+console.log("isProdBuild:    ", isProdBuild);
+console.log("outputDir:      ", outputDir);
+console.log("NODE_ENV:       ", process.env.NODE_ENV);
+console.log("PLUGIN_VERSION: ", getVersion());
+
+function getVersion(): string {
+    const pluginJsonPath = path.resolve(__dirname, "plugin.json");
+    const pluginJson = JSON.parse(fs.readFileSync(pluginJsonPath, "utf-8"));
+    return pluginJson.version;
+}
 
 export default defineConfig({
     resolve: {
@@ -36,7 +46,7 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 { src: "./README*.md", dest: "./" },
-                { src: "./plugin.json", dest: "./" },
+                { src: "./widget.json", dest: "./" },
                 { src: "./preview.png", dest: "./" },
                 { src: "./icon.png", dest: "./" }
             ],
@@ -53,7 +63,7 @@ export default defineConfig({
         outDir: outputDir,
         emptyOutDir: false,
         minify: true,
-        sourcemap: isSrcmap ? 'inline' : false,
+        sourcemap: isSourceMap ? 'inline' : false,
 
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
@@ -70,7 +80,7 @@ export default defineConfig({
                             const files = await fg([
                                 'public/i18n/**',
                                 './README*.md',
-                                './plugin.json'
+                                './widget.json'
                             ]);
                             for (let file of files) {
                                 this.addWatchFile(file);
