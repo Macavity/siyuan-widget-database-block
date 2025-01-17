@@ -8,12 +8,12 @@
  */
 // make_install.js
 import fs from 'fs';
-import { log, error, getSiYuanDir, chooseTarget, copyDirectory, getThisPluginName } from './utils.js';
+import { log, error, getSiYuanDir, chooseTarget, copyDirectory, getThisWidgetName } from './utils.js';
 
 let targetDir = '';
 
 /**
- * 1. Get the parent directory to install the plugin
+ * 1. Get the parent directory to install the widget
  */
 log('>>> Try to visit constant "targetDir" in make_install.js...');
 if (targetDir === '') {
@@ -29,13 +29,13 @@ if (targetDir === '') {
     log(`>>> Successfully got target directory: ${targetDir}`);
 }
 if (!fs.existsSync(targetDir)) {
-    error(`Failed! Plugin directory not exists: "${targetDir}"`);
-    error('Please set the plugin directory in scripts/make_install.js');
+    error(`Failed! Widget directory not exists: "${targetDir}"`);
+    error('Please set the widget directory in scripts/make_install.js');
     process.exit(1);
 }
 
 /**
- * 2. The dist directory, which contains the compiled plugin code
+ * 2. The dist directory, which contains the compiled widget code
  */
 const distDir = `${process.cwd()}/dist`;
 if (!fs.existsSync(distDir)) {
@@ -43,15 +43,15 @@ if (!fs.existsSync(distDir)) {
 }
 
 /**
- * 3. The target directory to install the plugin
+ * 3. The target directory to install the widget
  */
-const name = getThisPluginName();
+const name = getThisWidgetName();
 if (name === null) {
     process.exit(1);
 }
 const targetPath = `${targetDir}/${name}`;
 
 /**
- * 4. Copy the compiled plugin code to the target directory
+ * 4. Copy the compiled widget code to the target directory
  */
 copyDirectory(distDir, targetPath);

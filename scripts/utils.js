@@ -83,7 +83,7 @@ export async function chooseTarget(workspaces) {
     });
 
     if (count === 1) {
-        return `${workspaces[0].path}/data/plugins`;
+        return `${workspaces[0].path}/data/widgets`;
     } else {
         const rl = readline.createInterface({
             input: process.stdin,
@@ -95,7 +95,7 @@ export async function chooseTarget(workspaces) {
             });
         });
         rl.close();
-        return `${workspaces[index].path}/data/plugins`;
+        return `${workspaces[index].path}/data/widgets`;
     }
 }
 
@@ -117,19 +117,19 @@ export function cmpPath(path1, path2) {
     return path1 === path2;
 }
 
-export function getThisPluginName() {
-    if (!fs.existsSync('./plugin.json')) {
+export function getThisWidgetName() {
+    if (!fs.existsSync('./widget.json')) {
         process.chdir('../');
-        if (!fs.existsSync('./plugin.json')) {
-            error('Failed! plugin.json not found');
+        if (!fs.existsSync('./widget.json')) {
+            error('Failed! widget.json not found');
             return null;
         }
     }
 
-    const plugin = JSON.parse(fs.readFileSync('./plugin.json', 'utf8'));
-    const name = plugin?.name;
+    const widget = JSON.parse(fs.readFileSync('./widget.json', 'utf8'));
+    const name = widget?.name;
     if (!name) {
-        error('Failed! Please set plugin name in plugin.json');
+        error('Failed! Please set widget name in widget.json');
         return null;
     }
 

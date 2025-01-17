@@ -75,15 +75,15 @@ function incrementVersion(version, type) {
 // Main script
 (async function () {
     try {
-        const pluginJsonPath = path.join(process.cwd(), 'plugin.json');
+        const widgetJsonPath = path.join(process.cwd(), 'widget.json');
         const packageJsonPath = path.join(process.cwd(), 'package.json');
 
         // Read both JSON files
-        const pluginData = await readJsonFile(pluginJsonPath);
+        const widgetData = await readJsonFile(widgetJsonPath);
         const packageData = await readJsonFile(packageJsonPath);
 
         // Get the current version from both files (assuming both have the same version)
-        const currentVersion = pluginData.version || packageData.version;
+        const currentVersion = widgetData.version || packageData.version;
         console.log(`\n🌟  Current version: \x1b[36m${currentVersion}\x1b[0m\n`);
 
         // Calculate potential new versions for auto-update
@@ -125,12 +125,12 @@ function incrementVersion(version, type) {
                 return;
         }
 
-        // Update the version in both plugin.json and package.json
-        pluginData.version = newVersion;
+        // Update the version in both widget.json and package.json
+        widgetData.version = newVersion;
         packageData.version = newVersion;
 
         // Write the updated JSON back to files
-        await writeJsonFile(pluginJsonPath, pluginData);
+        await writeJsonFile(widgetJsonPath, widgetData);
         await writeJsonFile(packageJsonPath, packageData);
 
         console.log(`\n✅  Version successfully updated to: \x1b[32m${newVersion}\x1b[0m\n`);

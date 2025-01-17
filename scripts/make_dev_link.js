@@ -8,12 +8,12 @@
  */
 // make_dev_link.js
 import fs from 'fs';
-import { log, error, getSiYuanDir, chooseTarget, getThisPluginName, makeSymbolicLink } from './utils.js';
+import { log, error, getSiYuanDir, chooseTarget, getThisWidgetName, makeSymbolicLink } from './utils.js';
 
 let targetDir = '';
 
 /**
- * 1. Get the parent directory to install the plugin
+ * 1. Get the parent directory to install the widget
  */
 log('>>> Try to visit constant "targetDir" in make_dev_link.js...');
 if (targetDir === '') {
@@ -21,13 +21,13 @@ if (targetDir === '') {
     let res = await getSiYuanDir();
 
     if (!res || res.length === 0) {
-        log('>>> Can not get SiYuan directory automatically, try to visit environment variable "SIYUAN_PLUGIN_DIR"....');
-        let env = process.env?.SIYUAN_PLUGIN_DIR;
+        log('>>> Can not get SiYuan directory automatically, try to visit environment variable "SIYUAN_WIDGET_DIR"....');
+        let env = process.env?.SIYUAN_WIDGET_DIR;
         if (env) {
             targetDir = env;
-            log(`\tGot target directory from environment variable "SIYUAN_PLUGIN_DIR": ${targetDir}`);
+            log(`\tGot target directory from environment variable "SIYUAN_WIDGET_DIR": ${targetDir}`);
         } else {
-            error('\tCan not get SiYuan directory from environment variable "SIYUAN_PLUGIN_DIR", failed!');
+            error('\tCan not get SiYuan directory from environment variable "SIYUAN_WIDGET_DIR", failed!');
             process.exit(1);
         }
     } else {
@@ -37,13 +37,13 @@ if (targetDir === '') {
     log(`>>> Successfully got target directory: ${targetDir}`);
 }
 if (!fs.existsSync(targetDir)) {
-    error(`Failed! Plugin directory not exists: "${targetDir}"`);
-    error('Please set the plugin directory in scripts/make_dev_link.js');
+    error(`Failed! Widget directory not exists: "${targetDir}"`);
+    error('Please set the widget directory in scripts/make_dev_link.js');
     process.exit(1);
 }
 
 /**
- * 2. The dev directory, which contains the compiled plugin code
+ * 2. The dev directory, which contains the compiled widget code
  */
 const devDir = `${process.cwd()}/dev`;
 if (!fs.existsSync(devDir)) {
@@ -54,7 +54,7 @@ if (!fs.existsSync(devDir)) {
 /**
  * 3. The target directory to make symbolic link to dev directory
  */
-const name = getThisPluginName();
+const name = getThisWidgetName();
 if (name === null) {
     process.exit(1);
 }
