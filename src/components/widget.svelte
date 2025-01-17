@@ -7,8 +7,9 @@
     import {getAttributeViewKeys} from "@/api";
     import {TabType} from "@/types/tab-type";
     import {AttributeTable} from "@/types/attribute-table";
-    import {settingsService, SettingsService} from "@/module/settings/settings-service";
+    import {settingsService} from "@/module/settings/settings-service";
     import {refreshCssLink} from "@/utils/htmlUtil";
+    import {processAttributeData} from "@/services/block-database";
 
     let allTableDtoMap: Map<string, AttributeTable> = new Map();
     let selectTableDto: AttributeTable;
@@ -102,7 +103,7 @@
     }
 
     function setFrameHeight() {
-        let contentHeight = document.getElementById("app").offsetHeight + 20;
+        let contentHeight = document.getElementById("widget").offsetHeight + 20;
         if (settingsService.widgetCollapsed) {
             contentHeight =
                 document.getElementById("top-navigation-bar").offsetHeight + 20;

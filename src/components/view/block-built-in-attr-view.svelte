@@ -3,6 +3,7 @@
     import {settingsService} from "@/module/settings/settings-service";
     import {getBlockAttrs} from "@/api";
     import {BuiltInAttributeRow} from "@/types/attribute-row";
+    import {getWindowSiyuan} from "@/libs/widget-api";
 
     
     let attributeRowDtos: BuiltInAttributeRow[] = [];
@@ -19,22 +20,22 @@
         let blockBuiltInAttrMapList = [
             {
                 name: "bookmark",
-                showName: window.parent.window.siyuan.languages.bookmark,
+                showName: getWindowSiyuan().languages.bookmark,
                 content: blockAttrMap["bookmark"],
             },
             {
                 name: "name",
-                showName: window.parent.window.siyuan.languages.name,
+                showName: getWindowSiyuan().languages.name,
                 content: blockAttrMap["name"],
             },
             {
                 name: "alias",
-                showName: window.parent.window.siyuan.languages.alias,
+                showName: getWindowSiyuan().languages.alias,
                 content: blockAttrMap["alias"],
             },
             {
                 name: "memo",
-                showName: window.parent.window.siyuan.languages.memo,
+                showName: getWindowSiyuan().languages.memo,
                 content: blockAttrMap["memo"],
             },
         ];
