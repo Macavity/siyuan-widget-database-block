@@ -2,7 +2,7 @@
   "name": "widget-database-block",
   "author": "Macavity",
   "url": "siyuan-widget-database-block",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "minAppVersion": "3.0.17",
   "backends": [
     "windows",
