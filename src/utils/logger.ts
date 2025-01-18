@@ -1,5 +1,4 @@
-
-let logLevel = 2;
+const logLevel = 5;
 const NAME = "DB";
 const PREFIX = "Database Block";
 
@@ -26,7 +25,7 @@ export function isDebugMode() {
   return commonPushCheck() > logLevel;
 }
 
-export function debugPush(str: string, ...args: any[]) {
+export function debugPush(str: string, ...args: unknown[]) {
   if (commonPushCheck() >= 5) {
     console.debug(
       `${PREFIX}[D] ${new Date().toLocaleTimeString()} ${str}`,
@@ -35,7 +34,7 @@ export function debugPush(str: string, ...args: any[]) {
   }
 }
 
-export function infoPush(str: string, ...args: any[]) {
+export function infoPush(str: string, ...args: unknown[]) {
   if (commonPushCheck() >= 3) {
     console.info(
       `${PREFIX}[I] ${new Date().toLocaleTimeString()} ${str}`,
@@ -44,7 +43,7 @@ export function infoPush(str: string, ...args: any[]) {
   }
 }
 
-export function logPush(str: string, ...args: any[]) {
+export function logPush(str: string, ...args: unknown[]) {
   if (commonPushCheck() >= 4) {
     console.log(
       `${PREFIX}[L] ${new Date().toLocaleTimeString()} ${str}`,
@@ -53,7 +52,7 @@ export function logPush(str: string, ...args: any[]) {
   }
 }
 
-export function errorPush(str: string, ...args: any[]) {
+export function errorPush(str: string, ...args: unknown[]) {
   if (commonPushCheck() >= 1) {
     console.error(
       `${PREFIX}[E] ${new Date().toLocaleTimeString()} ${str}`,
@@ -63,7 +62,7 @@ export function errorPush(str: string, ...args: any[]) {
   }
 }
 
-export function warnPush(str: string, ...args: any[]) {
+export function warnPush(str: string, ...args: unknown[]) {
   if (commonPushCheck() >= 2) {
     console.warn(
       `${PREFIX}[W] ${new Date().toLocaleTimeString()} ${str}`,

@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable svelte/no-at-html-tags */
     import {afterUpdate, createEventDispatcher} from "svelte";
     import { openImage, openRefLink } from "@/utils/ref-util";
     import {AttributeTable} from "@/types/attribute-table";

@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable svelte/no-at-html-tags */
     import {afterUpdate, createEventDispatcher, onMount} from "svelte";
     import {getBlockAttrs} from "@/api";
     import {settingsService} from "@/module/settings/settings-service";
@@ -32,8 +33,6 @@
             let rowDto = new BuiltInAttributeRow(showName, htmlContent);
             attributeRowDtos.push(rowDto);
         }
-
-        attributeRowDtos = attributeRowDtos;
     }
 </script>
 

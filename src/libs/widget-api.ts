@@ -20,7 +20,7 @@ export function getCurrentWidgetId() {
       return window.frameElement.parentElement.parentElement.dataset.nodeId;
     }
   } catch (err) {
-    console.warn("getCurrentWidgetId window...nodeId方法失效");
+    console.warn("getCurrentWidgetId window", err);
     return null;
   }
 }
@@ -28,8 +28,8 @@ export function getCurrentWidgetId() {
 export async function getDefaultTargetBlockId(
   method: "RootBlock" | "PreviousBlock" | "NextBlock",
 ) {
-  let targetBlockId; //目标任务列表块id
-  let thisWidgetBlockElem = window.frameElement.parentElement.parentElement;
+  let targetBlockId: string;
+  const thisWidgetBlockElem = window.frameElement.parentElement.parentElement;
 
   switch (method) {
     case "RootBlock":
@@ -61,12 +61,12 @@ export async function getDefaultTargetBlockId(
  */
 export async function getCurrentDocId(): Promise<string> {
   let thisDocId: string;
-  let thisWidgetId = getCurrentWidgetId();
+  const thisWidgetId = getCurrentWidgetId();
 
   // Relying on widgetId sql lookup, the most stable solution at runtime (but the widget can't be queried when it's just inserted!)
   if (notEmpty(thisWidgetId)) {
     try {
-      let widgetBlockInfo = await getBlockByID(thisWidgetId);
+      const widgetBlockInfo = await getBlockByID(thisWidgetId);
 
       if (widgetBlockInfo && widgetBlockInfo.root_id) {
         thisDocId = widgetBlockInfo.root_id;
@@ -80,7 +80,7 @@ export async function getCurrentDocId(): Promise<string> {
   try {
     if (notEmpty(thisWidgetId)) {
       //通过获取挂件所在页面题头图的data-node-id获取文档id【安卓下跳转返回有问题，原因未知】
-      let thisDocId = window.top.document
+      const thisDocId = window.top.document
         .querySelector(
           `div.protyle-content:has(.iframe[data-node-id="${thisWidgetId}"]) .protyle-background`,
         )
@@ -104,11 +104,11 @@ export async function getCurrentDocId(): Promise<string> {
           ".protyle-breadcrumb .protyle-breadcrumb__item .popover__block[data-id]",
         )
         ?.getAttribute("data-id");
-      let iconArray = window.top.document.querySelectorAll(
+      const iconArray = window.top.document.querySelectorAll(
         ".protyle-breadcrumb .protyle-breadcrumb__item .popover__block[data-id]",
       );
       for (let i = 0; i < iconArray.length; i++) {
-        let iconOne = iconArray[i];
+        const iconOne = iconArray[i];
         if (
           iconOne.children.length > 0 &&
           iconOne.children[0].getAttribute("xlink:href") == "#iconFile"
@@ -141,8 +141,8 @@ export async function getCurrentDocId(): Promise<string> {
         )
         .getAttribute("data-node-id");
       console.log("获取当前文档idBy方案C" + thisDocId);
-    } catch (err) {
-      console.error("获取当前文档id均失败");
+    } catch (e) {
+      console.error("Failed to get current document id", e);
       return null;
     }
     return thisDocId;

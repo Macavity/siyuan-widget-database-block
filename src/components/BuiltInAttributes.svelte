@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable svelte/no-at-html-tags */
     import {afterUpdate, createEventDispatcher, onMount} from "svelte";
     import {settingsService} from "@/module/settings/settings-service";
     import {getBlockAttrs} from "@/api";

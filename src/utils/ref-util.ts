@@ -5,7 +5,7 @@ import { notEmpty } from "./stringUtil";
  * @license Magnolia
  */
 export function openRefLink(event, paramId = "") {
-  let document = window.parent.document;
+  const document = window.parent.document;
   let id;
   if (
     event &&
@@ -23,15 +23,15 @@ export function openRefLink(event, paramId = "") {
     event.preventDefault();
     event.stopPropagation();
   }
-  let spanElement = document.createElement("span");
+  const spanElement = document.createElement("span");
   spanElement.setAttribute("data-type", "block-ref");
   spanElement.setAttribute("data-id", id);
   spanElement.style.display = "none"; //不显示虚拟链接，防止视觉干扰
-  let element = document.querySelector(
+  const element = document.querySelector(
     ".protyle-wysiwyg div[data-node-id] div[contenteditable]",
   );
   element.appendChild(spanElement);
-  let clickEvent = new MouseEvent("click", {
+  const clickEvent = new MouseEvent("click", {
     ctrlKey: event ? event.ctrlKey : undefined,
     shiftKey: event ? event.shiftKey : undefined,
     altKey: event ? event.altKey : undefined,
@@ -42,7 +42,7 @@ export function openRefLink(event, paramId = "") {
 }
 
 export function openImage(event, src = "") {
-  let parentDocument = window.parent.document;
+  const parentDocument = window.parent.document;
 
   if (!notEmpty(src)) {
     return;
@@ -52,15 +52,15 @@ export function openImage(event, src = "") {
     event.stopPropagation();
   }
 
-  let imgElement = parentDocument.createElement("img");
+  const imgElement = parentDocument.createElement("img");
   imgElement.classList.add("av__cellassetimg");
   imgElement.setAttribute("src", src);
   imgElement.style.display = "none"; //不显示虚拟链接，防止视觉干扰
-  let tempParentElement = parentDocument.querySelector(
+  const tempParentElement = parentDocument.querySelector(
     ".protyle-wysiwyg div[data-node-id] div[contenteditable]",
   );
   tempParentElement.appendChild(imgElement);
-  let clickEvent = new MouseEvent("click", {
+  const clickEvent = new MouseEvent("click", {
     ctrlKey: event ? event.ctrlKey : undefined,
     shiftKey: true,
     altKey: event ? event.altKey : undefined,
