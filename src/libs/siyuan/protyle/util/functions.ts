@@ -3,5 +3,5 @@
  * @source app/src/protyle/util/functions.ts
  */
 export const isMobile = () => {
-  return document.getElementById("sidebar") ? true : false;
+  return !!document.getElementById("sidebar");
 };

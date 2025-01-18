@@ -25,7 +25,7 @@ export const unicode2Emoji = (
       if (needSpan) {
         emoji = `<span class="${className}">${emoji}</span>`;
       }
-    } catch (e) {
+    } catch {
       // 自定义表情搜索报错 https://github.com/siyuan-note/siyuan/issues/5883
       // 这里忽略错误不做处理
     }

@@ -1,5 +1,5 @@
 import { TAVCol } from "siyuan";
-import { isNotBlankStr } from "@/utils/stringUtil";
+import { notEmpty } from "@/utils/stringUtil";
 import { IAVCellValue } from "@/types/siyuan.types";
 import { AttributeTable } from "@/types/attribute-table";
 import { AttributeRow } from "@/types/attribute-row";
@@ -10,7 +10,7 @@ import { genAVValueHTML } from "@/libs/siyuan/protyle/render/av/blockAttr";
 export function processAttributeData(
   attributeViewKeys: AttributeView[],
 ): Map<string, AttributeTable> {
-  let tableDtoMap: Map<string, AttributeTable> = new Map();
+  const tableDtoMap: Map<string, AttributeTable> = new Map();
   if (!attributeViewKeys || attributeViewKeys.length <= 0) {
     return tableDtoMap;
   }
@@ -20,18 +20,18 @@ export function processAttributeData(
       continue;
     }
 
-    let attributeDtos: AttributeRow[] = [];
-    let avId = table.avID;
-    let blockIds = table.blockIDs;
-    let avName = table.avName;
+    const attributeDtos: AttributeRow[] = [];
+    const avId = table.avID;
+    const blockIds = table.blockIDs;
+    const avName = table.avName;
 
     for (const keyValue of table.keyValues) {
       if (!keyValue) {
         continue;
       }
 
-      let content = genAVValueHTML(keyValue.values[0]);
-      let attributeType = keyValue.values[0].type;
+      const content = genAVValueHTML(keyValue.values[0]);
+      const attributeType = keyValue.values[0].type;
 
       if (contentFilterValid(keyValue.values[0])) {
         // console.log(
@@ -40,9 +40,9 @@ export function processAttributeData(
         continue;
       }
 
-      let iconHtml = getIconHtml(keyValue.key.icon, keyValue.key.type);
+      const iconHtml = getIconHtml(keyValue.key.icon, keyValue.key.type);
 
-      let atrDto = new AttributeRow(
+      const atrDto = new AttributeRow(
         keyValue.key.id,
         keyValue.key.name,
         attributeType,
@@ -51,7 +51,7 @@ export function processAttributeData(
       );
       attributeDtos.push(atrDto);
     }
-    let tableDto = new AttributeTable(avId, blockIds, avName, attributeDtos);
+    const tableDto = new AttributeTable(avId, blockIds, avName, attributeDtos);
 
     tableDtoMap.set(avId, tableDto);
   }
@@ -60,8 +60,8 @@ export function processAttributeData(
 }
 
 function contentFilterValid(cellValue: IAVCellValue): boolean {
-  let type: TAVCol = cellValue.type;
-  let filterEmpty = settingsService.widgetSettingDto.filterEmpty;
+  const type: TAVCol = cellValue.type;
+  const filterEmpty = settingsService.widgetSettings.filterEmpty;
   if (!filterEmpty) {
     return false;
   }
@@ -132,9 +132,6 @@ function contentFilterValid(cellValue: IAVCellValue): boolean {
       content = "1";
       break;
   }
-  if (isNotBlankStr(content)) {
-    return false;
-  } else {
-    return true;
-  }
+
+  return !notEmpty(content);
 }

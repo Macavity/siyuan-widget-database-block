@@ -1,21 +1,13 @@
-import {TargetBlockMethod} from "@/module/settings/types/target-block-method";
+import { TargetBlockMethod } from "@/module/settings/types/target-block-method";
 
 export class GlobalSettings {
-    defaultGetTargetBlockMethod: TargetBlockMethod;
-    defaultColumns: number;
-    defaultFilterEmpty: boolean;
-    defaultCollapsed: boolean;
-    defaultShowBuiltInAttr: boolean;
-    defaultShowCustomAttr: boolean;
-    useThirdPartyThemeStyles: boolean;
-
-    constructor() {
-        this.defaultGetTargetBlockMethod = TargetBlockMethod.RootBlock;
-        this.defaultColumns = 1;
-        this.defaultFilterEmpty = false;
-        this.defaultCollapsed = false;
-        this.defaultShowBuiltInAttr = false;
-        this.defaultShowCustomAttr = false;
-        this.useThirdPartyThemeStyles = false;
-    }
+  constructor(
+    public defaultGetTargetBlockMethod: TargetBlockMethod = TargetBlockMethod.RootBlock,
+    public defaultColumns: number = 1,
+    public defaultFilterEmpty: boolean = false,
+    public defaultCollapsed: boolean = false,
+    public defaultShowBuiltInAttr: boolean = false,
+    public defaultShowCustomAttr: boolean = false,
+    public useThirdPartyThemeStyles: boolean = false,
+  ) {}
 }

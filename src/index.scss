@@ -1,7 +1,57 @@
-@import "../node_modules/siyuan-app/app/src/assets/scss/base.scss";
+:root {
+  // --b3-theme-surface-lighter: #e0e0e0;
+  // --b3-theme-on-surface: #5f6368;
+  // --b3-border-radius: 6px;
+  // --b3-transition: all .2s cubic-bezier(0, 0, .2, 1) 0ms;
+  // --b3-list-hover: rgba(0, 0, 0, .075);
+  // --b3-list-icon-hover: rgba(33, 34, 36, .1);
+  /* 定义颜色变量 */
+}
 
 html {
   position: static;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  margin: 0;
+  font-family: var(--b3-font-family);
+  font-size: 14px;
+  color: var(--b3-theme-on-background);
+  // background-color: var(--b3-theme-background);
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  box-sizing: border-box;
+  max-height: 100%;
+  // overflow: hidden;
+  // background-color: transparent;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.fn__flex {
+  display: flex;
+}
+
+
+.fn__flex-1 {
+  flex: 1;
+  min-width: .1px;
+  overflow: auto;
+  min-height: .1px;
+}
+
+.block__logoicon {
+  margin-right: 4px;
+  height: 16px;
+  width: 16px;
+  padding: 4px;
+  flex-shrink: 0;
 }
 
 .block__logoicon.custom-emoji {
@@ -9,6 +59,10 @@ html {
 }
 
 
+svg {
+  fill: currentColor;
+  display: inline-block;
+}
 
 svg:not(:root) {
   overflow-clip-margin: content-box;
@@ -230,11 +284,10 @@ ul {
   background-color: var(--b3-list-hover);
 }
 
-.layout-tab-bar .item--focus {
-  --chroma-calc: calc(c * 0.9 * var(--asri-c-0, 1));
-  background-color: oklch(from var(--b3-theme-primary) 0.43 var(--chroma-calc) h/0.2);
-}
-
+//.layout-tab-bar .item--focus {
+//  --chroma-calc: calc(c * 0.9 * var(--asri-c-0, 1));
+//  background-color: oklch(from var(--b3-theme-primary) 0.43 var(--chroma-calc) h/0.2);
+//}
 
 
 .layout-tab-bar .item__text {
@@ -242,7 +295,6 @@ ul {
   -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 0, #000 8px);
   mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 0, #000 8px);
 }
-
 
 
 .config__tab-container {
@@ -345,7 +397,6 @@ span[data-type~=block-ref][data-id].av__celltext--ref {
 }
 
 .text-white-space-wrap {
-  /* 超出宽度文字换行 */
   white-space: wrap;
 }
 

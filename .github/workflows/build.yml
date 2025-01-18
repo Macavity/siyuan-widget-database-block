@@ -26,7 +26,6 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 8
           run_install: false
 
       # Get pnpm store directory
@@ -49,8 +48,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      #- name: Lint
-      #  run: pnpm eslint
+      - name: Lint
+        run: pnpm eslint
 
       #- name: Test
       #  run: pnpm vitest run
