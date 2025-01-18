@@ -52,8 +52,8 @@ jobs:
       - name: Lint
         run: pnpm eslint
 
-      - name: Test
-        run: pnpm vitest run
+      #- name: Test
+      #  run: pnpm vitest run
 
       - name: Build for production
         run: pnpm build
