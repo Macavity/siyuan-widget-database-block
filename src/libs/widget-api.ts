@@ -1,4 +1,4 @@
-import { isNotBlankStr } from "@/utils/stringUtil";
+import { notEmpty } from "@/utils/stringUtil";
 import { getBlockByID } from "@/api";
 import { isMobile } from "@/libs/siyuan/protyle/util/functions";
 
@@ -64,7 +64,7 @@ export async function getCurrentDocId(): Promise<string> {
   let thisWidgetId = getCurrentWidgetId();
 
   // Relying on widgetId sql lookup, the most stable solution at runtime (but the widget can't be queried when it's just inserted!)
-  if (isNotBlankStr(thisWidgetId)) {
+  if (notEmpty(thisWidgetId)) {
     try {
       let widgetBlockInfo = await getBlockByID(thisWidgetId);
 
@@ -78,14 +78,14 @@ export async function getCurrentDocId(): Promise<string> {
   }
 
   try {
-    if (isNotBlankStr(thisWidgetId)) {
+    if (notEmpty(thisWidgetId)) {
       //通过获取挂件所在页面题头图的data-node-id获取文档id【安卓下跳转返回有问题，原因未知】
       let thisDocId = window.top.document
         .querySelector(
           `div.protyle-content:has(.iframe[data-node-id="${thisWidgetId}"]) .protyle-background`,
         )
         .getAttribute("data-node-id");
-      if (isNotBlankStr(thisDocId)) {
+      if (notEmpty(thisDocId)) {
         console.log("Failed to get document id by scheme B" + thisDocId);
         return thisDocId;
       }
@@ -133,7 +133,7 @@ export async function getCurrentDocId(): Promise<string> {
   }
 
   //widgetId不存在，则使用老方法（存在bug：获取当前展示的页面id（可能不是挂件所在的id））
-  if (!isNotBlankStr(thisWidgetId)) {
+  if (!notEmpty(thisWidgetId)) {
     try {
       thisDocId = window.top.document
         .querySelector(

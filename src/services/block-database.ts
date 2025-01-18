@@ -1,5 +1,5 @@
 import { TAVCol } from "siyuan";
-import { isNotBlankStr } from "@/utils/stringUtil";
+import { notEmpty } from "@/utils/stringUtil";
 import { IAVCellValue } from "@/types/siyuan.types";
 import { AttributeTable } from "@/types/attribute-table";
 import { AttributeRow } from "@/types/attribute-row";
@@ -61,7 +61,7 @@ export function processAttributeData(
 
 function contentFilterValid(cellValue: IAVCellValue): boolean {
   let type: TAVCol = cellValue.type;
-  let filterEmpty = settingsService.widgetSettingDto.filterEmpty;
+  let filterEmpty = settingsService.widgetSettings.filterEmpty;
   if (!filterEmpty) {
     return false;
   }
@@ -132,7 +132,7 @@ function contentFilterValid(cellValue: IAVCellValue): boolean {
       content = "1";
       break;
   }
-  if (isNotBlankStr(content)) {
+  if (notEmpty(content)) {
     return false;
   } else {
     return true;

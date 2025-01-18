@@ -1,21 +1,20 @@
 <script lang="ts">
-    import {afterUpdate, getContext} from "svelte";
+    import {afterUpdate, createEventDispatcher, getContext,} from "svelte";
     import {settingsService} from "@/module/settings/settings-service";
     import {Context} from "@/types/context";
 
     let globalSettingElementFold = true;
+    const dispatch = createEventDispatcher();
 
     const i18n = getContext(Context.I18N);
 
-    $: {
-        afterUpdate(afterRender);
-    }
+    afterUpdate(() => dispatch('update'));
 
     let widgetSettingDto = {
-        ...settingsService.widgetSettingDto,
+        ...settingsService.widgetSettings,
     };
-    let widgetGlobakSettingDto = {
-        ...settingsService.widgetGlobalSettingDto,
+    let widgetGlobalSettings = {
+        ...settingsService.globalSettings,
     };
 
     function clickSaveButton() {
@@ -23,30 +22,10 @@
     }
 
     function clickSaveGlobalButton() {
-        settingsService.updateLocalStorage(widgetGlobakSettingDto);
+        settingsService.updateLocalStorage(widgetGlobalSettings);
     }
     function handleKeyDownDefault() {}
 
-    function setFrameHeight() {
-        let contentHeight = document.getElementById("widget").offsetHeight + 20;
-        if (settingsService.widgetCollapsed) {
-            contentHeight =
-                document.getElementById("top-navigation-bar").offsetHeight + 20;
-        }
-        if (contentHeight <= 30) {
-            return;
-        }
-        let frameElement = window.frameElement as HTMLElement;
-        frameElement.style.height = contentHeight + "px";
-        frameElement.style.width = "2048px";
-    }
-
-    function afterRender() {
-        setFrameHeight();
-        // setTimeout(() => {
-        //     setFrameHeight();
-        // }, 120);
-    }
 </script>
 
 <div class="flex_center" style="display:flex;flex-wrap: wrap;">
@@ -148,7 +127,7 @@
                 <span class="fn__space"></span>
                 <select
                     class="b3-select fn__flex-center fn__size200"
-                    bind:value={widgetGlobakSettingDto.defaultGetTargetBlockMethod}
+                    bind:value={widgetGlobalSettings.defaultGetTargetBlockMethod}
                 >
                     <option value="RootBlock">{i18n.targetCurrentBlock}</option>
                     <option value="PreviousBlock">{i18n.targetPreviousBlock}</option>
@@ -165,7 +144,7 @@
                     min="1"
                     max="5"
                     id="apiTimeout"
-                    bind:value={widgetGlobakSettingDto.defaultColumns}
+                    bind:value={widgetGlobalSettings.defaultColumns}
                 />
             </div>
             <div class="fn__flex div_bottom">
@@ -174,7 +153,7 @@
                 <input
                     class="b3-switch fn__flex-center"
                     type="checkbox"
-                    bind:checked={widgetGlobakSettingDto.defaultFilterEmpty}
+                    bind:checked={widgetGlobalSettings.defaultFilterEmpty}
                 />
             </div>
             <div class="fn__flex div_bottom">
@@ -183,7 +162,7 @@
                 <input
                     class="b3-switch fn__flex-center"
                     type="checkbox"
-                    bind:checked={widgetGlobakSettingDto.defaultCollapsed}
+                    bind:checked={widgetGlobalSettings.defaultCollapsed}
                 />
             </div>
 
@@ -193,7 +172,7 @@
                 <input
                     class="b3-switch fn__flex-center"
                     type="checkbox"
-                    bind:checked={widgetGlobakSettingDto.defaultShowBuiltInAttr}
+                    bind:checked={widgetGlobalSettings.defaultShowBuiltInAttr}
                 />
             </div>
 
@@ -203,7 +182,7 @@
                 <input
                     class="b3-switch fn__flex-center"
                     type="checkbox"
-                    bind:checked={widgetGlobakSettingDto.defaultShowCustomAttr}
+                    bind:checked={widgetGlobalSettings.defaultShowCustomAttr}
                 />
             </div>
             <div class="fn__flex div_bottom">
@@ -212,13 +191,13 @@
                 <input
                     class="b3-switch fn__flex-center"
                     type="checkbox"
-                    bind:checked={widgetGlobakSettingDto.useThirdPartyThemeStyles}
+                    bind:checked={widgetGlobalSettings.useThirdPartyThemeStyles}
                 />
             </div>
 
             <div class="flex_center" style="flex-basis: 100%;">
                 <button class="b3-button" on:click={clickSaveGlobalButton}
-                    >保存全局设置</button
+                    >{i18n.saveGlobal}</button
                 >
             </div>
         {/if}
