@@ -28,6 +28,11 @@ body {
   // background-color: transparent;
 }
 
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 
 .fn__flex {
   display: flex;
@@ -285,13 +290,11 @@ ul {
 //}
 
 
-
 .layout-tab-bar .item__text {
   padding: 2px 6px 2px 6px;
   -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 0, #000 8px);
   mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 0, #000 8px);
 }
-
 
 
 .config__tab-container {

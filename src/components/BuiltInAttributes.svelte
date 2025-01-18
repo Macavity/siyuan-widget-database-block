@@ -57,7 +57,7 @@
     }
 </script>
 
-<div class="document-properties" style="display:flex;flex-wrap: wrap;">
+<div class="flex-wrap">
     {#each attributeRowDtos as item}
         <div
                 class="block__icons av__row"

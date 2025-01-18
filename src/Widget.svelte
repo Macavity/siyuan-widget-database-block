@@ -47,11 +47,10 @@
     }
 
     async function refreshBlockAttributeData() {
-        let targetBlockId = settingsService.widgetSettings.targetBlockId;
-        let attributeViewKeys = await getAttributeViewKeys(targetBlockId);
+        let attributeViewKeys = await getAttributeViewKeys(settingsService.widgetSettings.targetBlockId);
 
-        let tableDtos = processAttributeData(attributeViewKeys);
-        refreshAttributeTable(tableDtos);
+        let tableDTOs = processAttributeData(attributeViewKeys);
+        refreshAttributeTable(tableDTOs);
         initSelectTab();
     }
 
@@ -102,7 +101,7 @@
     }
 
     async function triggerRefresh() {
-        init();
+        await init();
     }
 
     async function toggleCollapseTab() {
@@ -115,7 +114,7 @@
         selectTableDto = null;
 
         settingsService.widgetSettings.lastSelectTabType = tabType;
-        settingsService.update(settingsService.widgetSettings);
+        settingsService.updateWidgetSettings(settingsService.widgetSettings);
     }
 
     function clickAttributeTab(
@@ -133,7 +132,7 @@
             selectAttributeTabId = avId;
             settingsService.widgetSettings.lastSelectAvId = avId;
             settingsService.widgetSettings.lastSelectTabType = tabType;
-            settingsService.update(settingsService.widgetSettings);
+            settingsService.updateWidgetSettings(settingsService.widgetSettings);
             refreshBlockAttributeData();
             setTimeout(() => {
                 avTabClickCount = 0; // reset count
@@ -152,12 +151,15 @@
             avTabClickCount = 0;
         }
     }
+
+    function onSave(){
+        triggerRefresh();
+    }
 </script>
 
 <div class="fn__flex">
     <div class="fn__flex layout-tab-bar" id="top-navigation-bar">
         <div class="fn__flex-grow">
-
             {#each Array.from(allTableDtoMap) as [key, item]}
                 <Button
                         isFocused={selectTabType === TabType.DATABASE_ATTR_TAB && selectAttributeTabId === key}
@@ -203,7 +205,7 @@
 <div id="main-content-container">
     {#if !settingsService.widgetCollapsed}
         {#if selectTabType === TabType.SETTINGS_TAB}
-            <SettingView on:update={onUpdate}/>
+            <SettingView on:update={onUpdate} on:save={onSave}/>
         {/if}
         {#if selectTabType === TabType.BUILT_IN_ATTR_TAB}
             <BuiltInAttributes on:update={onUpdate}/>

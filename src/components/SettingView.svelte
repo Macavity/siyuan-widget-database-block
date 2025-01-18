@@ -18,15 +18,17 @@
     };
 
     function clickSaveButton() {
-        settingsService.update(widgetSettingDto);
+        settingsService.updateWidgetSettings(widgetSettingDto);
+        dispatch('save');
     }
 
     function clickSaveGlobalButton() {
-        settingsService.updateLocalStorage(widgetGlobalSettings);
+        settingsService.updateGlobalSettings(widgetGlobalSettings);
+        dispatch('save');
     }
 </script>
 
-<div class="flex_center" style="display:flex;flex-wrap: wrap;">
+<div class="flex_center flex-wrap">
     <div class="flex_center">
         <h2 class="fn__flex flex_center" style="flex-basis: 100%;">
             {i18n.currentWidgetSettings}

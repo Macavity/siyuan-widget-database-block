@@ -1,38 +1,37 @@
-import { getBlockAttrs, getLocalStorage } from "@/api";
-import { getCurrentWidgetId, getDefaultTargetBlockId } from "@/libs/widget-api";
-import { AttrSetting } from "@/module/settings/types/attr-setting";
 import { GlobalSettings } from "@/module/settings/types/global-settings";
-import {
-  LOCAL_STORAGE,
-  WIDGET_SETTING_ATTRIBUTE_NAME,
-} from "@/module/settings/settings-service";
+import { WidgetSettings } from "@/module/settings/types/widget-settings";
 
 export class SettingsFactory {
-  static async createSettings(): Promise<{
-    widgetSettings: AttrSetting;
-    globalSettings: GlobalSettings;
-    widgetBlockId: string;
-  }> {
-    const globalSettings = new GlobalSettings();
-    const data = await getLocalStorage();
-    const globalSettingDtoNew = data[LOCAL_STORAGE];
-    if (globalSettingDtoNew) {
-      Object.assign(globalSettings, globalSettingDtoNew);
-    }
+  static createGlobalSettingsFromStorage(
+    storageData: Partial<GlobalSettings>,
+  ): GlobalSettings {
+    return new GlobalSettings(
+      storageData.defaultGetTargetBlockMethod,
+      storageData.defaultColumns,
+      storageData.defaultFilterEmpty,
+      storageData.defaultCollapsed,
+      storageData.defaultShowBuiltInAttr,
+      storageData.defaultShowCustomAttr,
+      storageData.useThirdPartyThemeStyles,
+    );
+  }
 
-    const widgetSettings = new AttrSetting(globalSettings);
-    const widgetBlockId = getCurrentWidgetId();
-    const blockAttrMap = await getBlockAttrs(widgetBlockId);
-    const settings = blockAttrMap[WIDGET_SETTING_ATTRIBUTE_NAME];
-    if (settings) {
-      Object.assign(widgetSettings, JSON.parse(settings));
-    }
-    if (!widgetSettings.targetBlockId) {
-      widgetSettings.targetBlockId = await getDefaultTargetBlockId(
-        globalSettings.defaultGetTargetBlockMethod,
-      );
-    }
-
-    return { widgetSettings, globalSettings, widgetBlockId };
+  static createWidgetSettings(
+    globalSettings: GlobalSettings,
+    widgetSettingsPartial: Partial<WidgetSettings>,
+  ): WidgetSettings {
+    return new WidgetSettings(
+      widgetSettingsPartial.columns ?? globalSettings.defaultColumns,
+      widgetSettingsPartial.filterEmpty ?? globalSettings.defaultFilterEmpty,
+      widgetSettingsPartial.openDocAutoCollapsed ??
+        globalSettings.defaultCollapsed,
+      widgetSettingsPartial.showBuiltInAttr ??
+        globalSettings.defaultShowBuiltInAttr,
+      widgetSettingsPartial.showCustomAttr ??
+        globalSettings.defaultShowCustomAttr,
+      widgetSettingsPartial.targetBlockId,
+      widgetSettingsPartial.lastSelectTabType,
+      widgetSettingsPartial.lastSelectAvId,
+    );
   }
 }

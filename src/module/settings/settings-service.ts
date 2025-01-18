@@ -5,62 +5,55 @@ import {
   setStorageVal,
 } from "@/api";
 import { getCurrentWidgetId, getDefaultTargetBlockId } from "@/libs/widget-api";
-import { AttrSetting } from "@/module/settings/types/attr-setting";
+import { WidgetSettings } from "@/module/settings/types/widget-settings";
 import { GlobalSettings } from "@/module/settings/types/global-settings";
+import { SettingsFactory } from "@/module/settings/settings-factory";
 
 export const LOCAL_STORAGE = "widget-database-block";
-export const WIDGET_SETTING_ATTRIBUTE_NAME =
-  "custom-widget-database-view-setting";
+export const WIDGET_SETTING_ATTRIBUTE_NAME = "custom-widget-database-block";
 
 export class SettingsService {
   widgetCollapsed: boolean;
   widgetBlockId: string;
-  widgetSettings: AttrSetting;
+  widgetSettings: WidgetSettings;
   globalSettings: GlobalSettings;
 
-  async load() {
-    try {
-      this.globalSettings = new GlobalSettings();
-      const data = await getLocalStorage();
-      // logPush("getLocalStorage", data);
-      const globalSettingDtoNew = data[LOCAL_STORAGE];
-      if (globalSettingDtoNew) {
-        this.globalSettings = {
-          ...this.globalSettings,
-          ...globalSettingDtoNew,
-        };
-      }
-    } catch {
-      /* empty */
-    }
+  async loadGlobalSettings() {
+    const data = await getLocalStorage();
+    const currentSettings = data[LOCAL_STORAGE] ?? {};
 
-    try {
-      this.widgetSettings = new AttrSetting(this.globalSettings);
+    this.globalSettings =
+      SettingsFactory.createGlobalSettingsFromStorage(currentSettings);
+  }
 
+  async loadWidgetSettings() {
+    try {
       this.widgetBlockId = getCurrentWidgetId();
 
       const blockAttrMap = await getBlockAttrs(this.widgetBlockId);
-      const settings = blockAttrMap[WIDGET_SETTING_ATTRIBUTE_NAME];
-      if (settings) {
-        this.widgetSettings = {
-          ...this.widgetSettings,
-          ...JSON.parse(settings),
-        };
-      }
+      const currentWidgetSettings =
+        JSON.parse(blockAttrMap[WIDGET_SETTING_ATTRIBUTE_NAME]) ?? {};
+
+      this.widgetSettings = SettingsFactory.createWidgetSettings(
+        this.globalSettings,
+        currentWidgetSettings,
+      );
+
       if (!this.widgetSettings.targetBlockId) {
         this.widgetSettings.targetBlockId = await getDefaultTargetBlockId(
           this.globalSettings.defaultGetTargetBlockMethod,
         );
       }
+
       // If the attribute does not exist, it means that it is created for the first time and is not collapsed
       // by default and the configuration is saved.
-      if (settings) {
+      if (currentWidgetSettings) {
         this.widgetCollapsed = this.widgetSettings.openDocAutoCollapsed;
       } else {
         this.widgetCollapsed = false;
-        // Delay the save by 0.5 seconds, as the pendant may not be indexed yet and a direct save will fail.
+        // Delay the save by 0.5 seconds, as the widget may not be indexed yet and a direct save will fail.
         setTimeout(() => {
-          this.update(this.widgetSettings);
+          this.updateWidgetSettings(this.widgetSettings);
         }, 500);
       }
     } catch {
@@ -68,7 +61,12 @@ export class SettingsService {
     }
   }
 
-  async update(WidgetSettingDto: AttrSetting) {
+  async load() {
+    await this.loadGlobalSettings();
+    await this.loadWidgetSettings();
+  }
+
+  async updateWidgetSettings(WidgetSettingDto: WidgetSettings) {
     this.widgetSettings = WidgetSettingDto;
 
     await setBlockAttrs(this.widgetBlockId, {
@@ -76,7 +74,7 @@ export class SettingsService {
     });
   }
 
-  async updateLocalStorage(widgetGlobalSettingDto: GlobalSettings) {
+  async updateGlobalSettings(widgetGlobalSettingDto: GlobalSettings) {
     this.globalSettings = widgetGlobalSettingDto;
 
     await setStorageVal(LOCAL_STORAGE, widgetGlobalSettingDto);

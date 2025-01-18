@@ -1,7 +1,7 @@
 <script lang="ts">
     /* eslint-disable svelte/no-at-html-tags */
     import {afterUpdate, createEventDispatcher} from "svelte";
-    import { openImage, openRefLink } from "@/utils/ref-util";
+    import {openImage, openRefLink} from "@/utils/ref-util";
     import {AttributeTable} from "@/types/attribute-table";
     import {settingsService} from "@/module/settings/settings-service";
 
@@ -9,11 +9,12 @@
     let rowFlexBasisPercent = "99%";
     const dispatch = createEventDispatcher();
 
-    afterUpdate(() => onUpdate);
+    afterUpdate(() => {
+        onUpdate();
+    });
 
     function onUpdate() {
-        let columns = settingsService.widgetSettings.columns;
-        let rowFlexBasis = 100 / columns - 2.1;
+        let rowFlexBasis = (100 / settingsService.widgetSettings.columns) - 2.1;
         rowFlexBasisPercent = rowFlexBasis + "%";
 
         dispatch('update');
@@ -39,7 +40,7 @@
     }
 </script>
 
-<div class="document-properties" style="display:flex;flex-wrap: wrap;">
+<div class="flex-wrap">
     {#each tableDto.attributes as item (item.id)}
         <div
             class="block__icons av__row"
