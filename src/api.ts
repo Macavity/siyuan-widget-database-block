@@ -12,9 +12,7 @@ export async function request(url: string, data: unknown) {
   const responseData = await fetch(url, {
     body: JSON.stringify(data),
     method: "POST",
-    headers: {
-      Authorization: `Token `,
-    },
+    headers: {},
   });
   const resData = await responseData.json();
 
