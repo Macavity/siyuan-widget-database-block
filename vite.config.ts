@@ -32,6 +32,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
+      "siyuan-app": resolve("./node_modules/siyuan-app"),
     },
   },
 

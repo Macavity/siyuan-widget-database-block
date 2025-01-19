@@ -14,7 +14,9 @@
     });
 
     function onUpdate() {
-        let rowFlexBasis = (100 / settingsService.widgetSettings.columns) - 2.1;
+        let columns = settingsService.widgetSettings.columns || 1;
+
+        let rowFlexBasis = (100 / columns) - 2.1;
         rowFlexBasisPercent = rowFlexBasis + "%";
 
         dispatch('update');
@@ -40,7 +42,7 @@
     }
 </script>
 
-<div class="flex-wrap">
+<div class="fn__flex fn__flex-wrap">
     {#each tableDto.attributes as item (item.id)}
         <div
             class="block__icons av__row"
@@ -62,25 +64,3 @@
         </div>
     {/each}
 </div>
-
-<style>
-    .av__row {
-        flex: 1 0;
-        border-bottom: 1px solid var(--b3-theme-on-background);
-        border-image: linear-gradient(
-                to right,
-                transparent,
-                var(--b3-theme-on-background),
-                transparent
-            )
-            1;
-        padding-bottom: 4px;
-        margin-top: 4px;
-    }
-    .block__logo-content {
-        width: 120px;
-        align-self: center;
-        margin-top: 2px;
-        flex-wrap: wrap;
-    }
-</style>

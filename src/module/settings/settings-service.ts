@@ -8,15 +8,17 @@ import { getCurrentWidgetId, getDefaultTargetBlockId } from "@/libs/widget-api";
 import { WidgetSettings } from "@/module/settings/types/widget-settings";
 import { GlobalSettings } from "@/module/settings/types/global-settings";
 import { SettingsFactory } from "@/module/settings/settings-factory";
+import { isCollapsed } from "@/stores/widgetStore";
+import { get } from "svelte/store";
 
 export const LOCAL_STORAGE = "widget-database-block";
 export const WIDGET_SETTING_ATTRIBUTE_NAME = "custom-widget-database-block";
 
 export class SettingsService {
-  widgetCollapsed: boolean;
   widgetBlockId: string;
-  widgetSettings: WidgetSettings;
-  globalSettings: GlobalSettings;
+  globalSettings: GlobalSettings | undefined;
+
+  widgetSettings: WidgetSettings | undefined;
 
   async loadGlobalSettings() {
     const data = await getLocalStorage();
@@ -39,6 +41,7 @@ export class SettingsService {
       this.globalSettings,
       currentWidgetSettings,
     );
+    isCollapsed.set(this.widgetSettings.isCollapsed);
 
     if (!this.widgetSettings.targetBlockId) {
       this.widgetSettings.targetBlockId = await getDefaultTargetBlockId(
@@ -48,14 +51,10 @@ export class SettingsService {
 
     // If the attribute does not exist, it means that it is created for the first time and is not collapsed
     // by default and the configuration is saved.
-    if (currentWidgetSettings) {
-      this.widgetCollapsed = this.widgetSettings.openDocAutoCollapsed;
-    } else {
-      this.widgetCollapsed = false;
-
+    if (!currentWidgetSettings) {
       // Delay the save by 0.5 seconds, as the widget may not be indexed yet and a direct save will fail.
       setTimeout(() => {
-        this.updateWidgetSettings(this.widgetSettings);
+        this.saveWidgetSettings();
       }, 500);
     }
   }
@@ -65,8 +64,18 @@ export class SettingsService {
     await this.loadWidgetSettings();
   }
 
-  async updateWidgetSettings(WidgetSettingDto: WidgetSettings) {
-    this.widgetSettings = WidgetSettingDto;
+  async updateWidgetSettings(widgetSettings: Partial<WidgetSettings>) {
+    this.widgetSettings = {
+      ...this.widgetSettings,
+      ...widgetSettings,
+    };
+
+    await this.saveWidgetSettings();
+  }
+
+  async saveWidgetSettings() {
+    // Update values from store
+    this.widgetSettings.isCollapsed = get(isCollapsed);
 
     await setBlockAttrs(this.widgetBlockId, {
       [WIDGET_SETTING_ATTRIBUTE_NAME]: JSON.stringify(this.widgetSettings),

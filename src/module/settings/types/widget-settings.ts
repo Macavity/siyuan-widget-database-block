@@ -10,5 +10,6 @@ export class WidgetSettings {
     public targetBlockId: string = null,
     public lastSelectTabType: TabType = null,
     public lastSelectAvId: string = null,
+    public isCollapsed: boolean = false,
   ) {}
 }
