@@ -2,11 +2,13 @@
     import {afterUpdate, createEventDispatcher, getContext,} from "svelte";
     import {settingsService} from "@/module/settings/settings-service";
     import {Context} from "@/types/context";
+    import SubmitButton from "@/components/SubmitButton.svelte";
 
     let globalSettingsFolded = true;
     const dispatch = createEventDispatcher();
-
     const i18n = getContext(Context.I18N);
+    let isSaving = false;
+    let isSavingGlobal = false;
 
     afterUpdate(() => dispatch('update'));
 
@@ -17,14 +19,18 @@
         ...settingsService.globalSettings,
     };
 
-    function clickSaveButton() {
-        settingsService.updateWidgetSettings(widgetSettingDto);
+    const clickSaveButton = async function() {
+        isSaving = true;
+        await settingsService.updateWidgetSettings(widgetSettingDto);
         dispatch('save');
+        isSaving = false;
     }
 
-    function clickSaveGlobalButton() {
-        settingsService.updateGlobalSettings(widgetGlobalSettings);
+    const clickSaveGlobalButton = async function() {
+        isSavingGlobal = true;
+        await settingsService.updateGlobalSettings(widgetGlobalSettings);
         dispatch('save');
+        isSavingGlobal = false;
     }
 </script>
 
@@ -96,7 +102,9 @@
         </div>
 
         <div class="flex_center" style="flex-basis: 100%;">
-            <button class="b3-button" on:click={clickSaveButton}>{i18n.save}</button>
+            <SubmitButton isSaving={isSaving}
+                          label={i18n.save}
+                          on:click={clickSaveButton} />
         </div>
     </div>
 
@@ -194,13 +202,15 @@
             </div>
 
             <div class="flex_center" style="flex-basis: 100%;">
-                <button class="b3-button" on:click={clickSaveGlobalButton}>{i18n.saveGlobal}</button>
+                <SubmitButton label={i18n.saveGlobal}
+                              isSaving={isSavingGlobal}
+                              on:click={clickSaveGlobalButton} />
             </div>
         {/if}
     </div>
 </div>
 
-<style>
+<style lang="scss">
     .fn__flex {
         display: flex;
         flex: 1 0 43%;
@@ -253,6 +263,7 @@
         border-radius: 20px;
         transition: var(--b3-transition);
         text-decoration: none;
+
     }
 
     .b3-button:hover {
@@ -265,5 +276,35 @@
 
     .b3-list-item__arrow--open {
         transform: rotate(90deg);
+    }
+
+    .spinner {
+      position: relative;
+    }
+
+    .spinner::after {
+      animation: viewer-spinner 1s linear infinite;
+      border: 4px solid rgba(255, 255, 255, .1);
+      border-left-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+      content: '';
+      display: inline-block;
+      height: 20px;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      position: absolute;
+      top: 50%;
+      width: 20px;
+      z-index: 1;
+    }
+
+    @keyframes viewer-spinner {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
 </style>

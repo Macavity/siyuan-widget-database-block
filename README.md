@@ -5,11 +5,15 @@
 
 ## Overview
 
-This widget only displays the database attributes of a block, it does not support modifying the attribute values (yet)
+This widget allows to show the database attributes of a table entry anywhere in SiYuan. It currently does not support **modifying** the attribute values. If you need that, I recommend using the [Database Properties Panel Plugin](https://github.com/Macavity/siyuan-database-properties-panel).
 
 ![Database view](.github/assets/widget-on-page.png)
 
 When multiple databases exist in a block, the last viewed database is displayed by default each time the document is opened. Otherwise, the first one is displayed, if there is no database the settings page is displayed.
+
+### Recent Changes
+
+- [1.0.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.3) - Fix saving settings issue
 
 ### Settings
 

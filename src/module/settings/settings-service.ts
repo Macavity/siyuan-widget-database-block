@@ -51,6 +51,7 @@ export class SettingsService {
         this.widgetCollapsed = this.widgetSettings.openDocAutoCollapsed;
       } else {
         this.widgetCollapsed = false;
+
         // Delay the save by 0.5 seconds, as the widget may not be indexed yet and a direct save will fail.
         setTimeout(() => {
           this.updateWidgetSettings(this.widgetSettings);

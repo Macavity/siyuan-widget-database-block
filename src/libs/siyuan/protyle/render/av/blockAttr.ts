@@ -17,11 +17,12 @@ export const genAVValueHTML = (value: IAVCellValue) => {
       html = `<textarea style="resize: vertical" rows="${value.text.content.split("\n").length}" class="b3-text-field b3-text-field--text fn__flex-1">${value.text.content}</textarea>`;
       break;
     case "number":
+      html = `<input value="${value.number.isNotEmpty ? value.number.content : ""}" type="number" class="b3-text-field b3-text-field--text fn__flex-1" disabled>`;
       html = `
-              <input value="${value.number.isNotEmpty ? value.number.content : ""}" 
-                      type="number" 
-                      class="b3-text-field b3-text-field--text fn__flex-1">
-  <span class="fn__space"></span><span class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips" aria-label="${getWindowSiyuan().languages.format}">${value.number.formattedContent}</span><span class="fn__space"></span>`;
+              <!--<input value="${value.number.isNotEmpty ? value.number.content : ""}" 
+                     type="number" 
+                     class="b3-text-field b3-text-field--text fn__flex-1">-->
+              <span class="fn__space"></span><span class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips" aria-label="${getWindowSiyuan().languages.format}">${value.number.formattedContent}</span><span class="fn__space"></span>`;
       break;
     case "mSelect":
     case "select":
@@ -34,7 +35,8 @@ export const genAVValueHTML = (value: IAVCellValue) => {
     case "mAsset":
       value.mAsset?.forEach((item) => {
         if (item.type === "image") {
-          html += `<img class="av__cellassetimg ariaLabel" aria-label="${item.content}" src="${item.content}">`;
+          // Need to prefix src with "/" so the path is relative to the root.
+          html += `<img class="av__cellassetimg ariaLabel" aria-label="${item.content}" src="/${item.content}">`;
         } else {
           html += `<span class="b3-chip b3-chip--middle av__celltext--url ariaLabel" aria-label="${escapeAttr(item.content)}" data-name="${escapeAttr(item.name)}" data-url="${escapeAttr(item.content)}">${item.name || item.content}</span>`;
         }
