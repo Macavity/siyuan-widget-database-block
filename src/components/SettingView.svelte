@@ -54,27 +54,6 @@
 </div>
 
 <style lang="scss">
-  .tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-
-  .tabs button {
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: pointer;
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .tabs button.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
   .tab-content {
     display: flex;
     justify-content: center;

@@ -16,6 +16,7 @@
     const clickSaveButton = async function() {
         isSaving = true;
         await settingsService.updateWidgetSettings(widgetSettingDto);
+        await settingsService.saveWidgetSettings();
         dispatch('save');
         isSaving = false;
     }

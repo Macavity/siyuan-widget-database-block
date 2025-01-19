@@ -32,6 +32,7 @@ export class SettingsFactory {
       widgetSettingsPartial.targetBlockId,
       widgetSettingsPartial.lastSelectTabType,
       widgetSettingsPartial.lastSelectAvId,
+      widgetSettingsPartial.isCollapsed,
     );
   }
 }

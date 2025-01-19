@@ -1,10 +1,13 @@
 import { settingsService } from "@/module/settings/settings-service";
+import { isCollapsed } from "@/stores/widgetStore";
+import { get } from "svelte/store";
 
 export function updateFrameHeight() {
   const widget = document.getElementById("widget");
   const topNavBar = document.getElementById("top-navigation-bar");
-  const contentHeight = settingsService.widgetCollapsed
-    ? topNavBar.offsetHeight + 20
+  const collapsed = get(isCollapsed);
+  const contentHeight = collapsed
+    ? topNavBar.offsetHeight + 2
     : widget.offsetHeight + 20;
 
   if (contentHeight <= 30) {
@@ -33,7 +36,6 @@ export function refreshCssLink() {
         continue;
       }
 
-      // 检查是否已经存在相同href的<link>标签
       if (isLinkExists(curLink)) {
         continue;
       }

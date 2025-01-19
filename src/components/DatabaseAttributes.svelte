@@ -67,13 +67,6 @@
     .av__row {
         flex: 1 0;
         border-bottom: 1px solid var(--b3-theme-on-background);
-        border-image: linear-gradient(
-                to right,
-                transparent,
-                var(--b3-theme-on-background),
-                transparent
-            )
-            1;
         padding-bottom: 4px;
         margin-top: 4px;
     }

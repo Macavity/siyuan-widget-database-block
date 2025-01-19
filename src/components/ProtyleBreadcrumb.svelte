@@ -1,13 +1,13 @@
 <script lang="ts">
-    import {createEventDispatcher, getContext} from "svelte";
-    import { settingsService } from "@/module/settings/settings-service";
-    import { TabType } from "@/types/tab-type";
-    import { openRefLink } from "@/utils/ref-util";
-    import { getAttributeViewKeys } from "@/api";
-    import { processAttributeData } from "@/services/block-database";
+    import {createEventDispatcher, getContext, onMount} from "svelte";
+    import {settingsService} from "@/module/settings/settings-service";
+    import {TabType} from "@/types/tab-type";
+    import {openRefLink} from "@/utils/ref-util";
     import Button from "@/components/Button.svelte";
     import {AttributeTable} from "@/types/attribute-table";
     import {Context} from "@/types/context";
+    import {isCollapsed} from "@/stores/widgetStore";
+    import {updateFrameHeight} from "@/utils/htmlUtil";
 
     export let allTableDtoMap: Map<string, AttributeTable>;
     export let selectTabType: TabType;
@@ -16,26 +16,12 @@
     export let showCustomAttr: boolean;
 
     const i18n = getContext(Context.I18N);
-
     const dispatch = createEventDispatcher();
     let avTabClickCount = 0;
 
-    async function refreshBlockAttributeData() {
-        let attributeViewKeys = await getAttributeViewKeys(settingsService.widgetSettings.targetBlockId);
-        let tableDTOs = processAttributeData(attributeViewKeys);
-        refreshAttributeTable(tableDTOs);
-    }
-
-    function refreshAttributeTable(tableDtoMap: Map<string, AttributeTable>) {
-        if (tableDtoMap && tableDtoMap.size > 0) {
-            allTableDtoMap = tableDtoMap;
-            selectAttributeTabId = allTableDtoMap.values().next().value.avId;
-        }
-    }
-
     function clickTab(tabType: TabType) {
         selectTabType = tabType;
-        dispatch('tabChange', { tabType });
+        dispatch('tabChange', {tabType});
     }
 
     function clickAttributeTab(event: MouseEvent | KeyboardEvent, tabType: TabType, avId: string) {
@@ -47,13 +33,10 @@
         if (avTabClickCount === 1) {
             selectTabType = tabType;
             selectAttributeTabId = avId;
-            settingsService.widgetSettings.lastSelectAvId = avId;
-            settingsService.widgetSettings.lastSelectTabType = tabType;
-            settingsService.updateWidgetSettings(settingsService.widgetSettings);
-            refreshBlockAttributeData();
             setTimeout(() => {
                 avTabClickCount = 0; // reset count
             }, 120);
+            dispatch('selectAttributeTab', {tabType, avId});
         }
         if (event.ctrlKey || event.shiftKey || event.altKey || avTabClickCount === 2) {
             let dto: AttributeTable = allTableDtoMap.get(avId);
@@ -67,9 +50,10 @@
         dispatch('refresh');
     }
 
-    function toggleCollapseTab() {
-        settingsService.widgetCollapsed = !settingsService.widgetCollapsed;
-        dispatch('collapseToggle');
+    const toggleCollapseTab = async () => {
+        isCollapsed.update(value => !value);
+        await settingsService.saveWidgetSettings();
+        updateFrameHeight();
     }
 </script>
 
@@ -106,9 +90,9 @@
             on:click={triggerRefresh}
             tooltip={i18n.refresh}/>
 
-    <Button icon={settingsService.widgetCollapsed ? "#iconExpand" : "#iconContract"}
+    <Button icon={$isCollapsed ? "#iconExpand" : "#iconContract"}
             on:click={toggleCollapseTab}
-            tooltip={settingsService.widgetCollapsed ? i18n.expand : i18n.collapse}/>
+            tooltip={$isCollapsed ? i18n.expand : i18n.collapse}/>
 
     <Button icon="#iconSettings"
             isFocused={selectTabType === TabType.SETTINGS_TAB}

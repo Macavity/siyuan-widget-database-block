@@ -2,18 +2,17 @@
     import DatabaseAttributes from "@/components/DatabaseAttributes.svelte";
     import BuiltInAttributes from "@/components/BuiltInAttributes.svelte";
     import CustomAttributeView from "@/components/CustomAttributeView.svelte";
-    import Button from "@/components/Button.svelte";
-    import {afterUpdate, onMount, setContext} from "svelte";
     import SettingView from "./components/SettingView.svelte";
+    import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
+    import {afterUpdate, onMount, setContext} from "svelte";
     import {getAttributeViewKeys} from "@/api";
     import {TabType} from "@/types/tab-type";
     import {AttributeTable} from "@/types/attribute-table";
     import {settingsService} from "@/module/settings/settings-service";
     import {refreshCssLink, updateFrameHeight} from "@/utils/htmlUtil";
     import {processAttributeData} from "@/services/block-database";
-    import {openRefLink} from "@/utils/ref-util";
     import {type I18N} from "@/types/i18n";
-    import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
+    import {isCollapsed} from "@/stores/widgetStore";
 
     export let i18n: I18N;
 
@@ -21,7 +20,6 @@
     let selectTableDto: AttributeTable;
     let selectTabType: TabType;
     let selectAttributeTabId: string;
-    let avTabClickCount = 0;
     let showBuiltInAttr = false;
     let showCustomAttr = false;
 
@@ -34,13 +32,11 @@
     afterUpdate(() => onUpdate);
 
     async function init() {
-        await settingsService.load();
 
         allTableDtoMap = new Map();
         refreshCssLink();
         selectTabType = settingsService.widgetSettings.lastSelectTabType;
-        selectAttributeTabId =
-            settingsService.widgetSettings.lastSelectAvId;
+        selectAttributeTabId = settingsService.widgetSettings.lastSelectAvId;
         showBuiltInAttr = settingsService.widgetSettings.showBuiltInAttr;
         showCustomAttr = settingsService.widgetSettings.showCustomAttr;
 
@@ -49,15 +45,12 @@
 
     async function refreshBlockAttributeData() {
         let attributeViewKeys = await getAttributeViewKeys(settingsService.widgetSettings.targetBlockId);
-
         let tableDTOs = processAttributeData(attributeViewKeys);
         refreshAttributeTable(tableDTOs);
         initSelectTab();
     }
 
-    function refreshAttributeTable(
-        tableDtoMap: Map<string, AttributeTable>,
-    ) {
+    function refreshAttributeTable(tableDtoMap: Map<string, AttributeTable>) {
         if (tableDtoMap && tableDtoMap.size > 0) {
             allTableDtoMap = tableDtoMap;
             selectTableDto = allTableDtoMap.get(selectAttributeTabId);
@@ -106,19 +99,40 @@
         await init();
     }
 
-    async function toggleCollapseTab() {
-        settingsService.widgetCollapsed = !settingsService.widgetCollapsed;
-        onUpdate();
-    }
+    // async function toggleCollapseTab() {
+    //     settingsService.toggleCollapsed();
+    //     console.log("toggleCollapseTab post", settingsService.isCollapsed);
+    //     await settingsService.saveWidgetSettings();
+    //     console.log("toggleCollapseTab post update", settingsService.isCollapsed);
+    //     onUpdate();
+    // }
 
     function clickTab(tabType: TabType) {
         selectTabType = tabType;
         selectTableDto = null;
 
+        if(tabType !== TabType.COLLAPSED_TAB){
+            isCollapsed.set(false);
+        }
+
         settingsService.widgetSettings.lastSelectTabType = tabType;
-        settingsService.updateWidgetSettings(settingsService.widgetSettings);
+        settingsService.saveWidgetSettings();
     }
 
+    function handleTabChange(event) {
+        clickTab(event.detail.tabType);
+    }
+
+    function handleAttributeTabChange(event) {
+        selectTabType = event.detail.tabType;
+        selectAttributeTabId = event.detail.avId;
+        isCollapsed.set(false);
+        settingsService.widgetSettings.lastSelectAvId = selectAttributeTabId;
+        settingsService.widgetSettings.lastSelectTabType = selectTabType;
+        settingsService.saveWidgetSettings();
+
+        refreshBlockAttributeData();
+    }
 
     function onSave() {
         triggerRefresh();
@@ -127,17 +141,17 @@
 
 <ProtyleBreadcrumb
         {allTableDtoMap}
-        {i18n}
-        on:collapseToggle={toggleCollapseTab}
         on:refresh={triggerRefresh}
-        on:tabChange={(e) => clickTab(e.detail.tabType)}
+        on:selectAttributeTab={handleAttributeTabChange}
+        on:tabChange={handleTabChange}
         {selectAttributeTabId}
         {selectTabType}
         {showBuiltInAttr}
         {showCustomAttr}
 />
+
 <div id="main-content-container">
-    {#if !settingsService.widgetCollapsed}
+    {#if !$isCollapsed}
         {#if selectTabType === TabType.SETTINGS_TAB}
             <SettingView on:update={onUpdate} on:save={onSave}/>
         {/if}
