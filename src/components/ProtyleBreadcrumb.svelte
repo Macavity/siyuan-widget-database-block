@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {createEventDispatcher, getContext, onMount} from "svelte";
+    import {createEventDispatcher, getContext} from "svelte";
     import {settingsService} from "@/module/settings/settings-service";
     import {TabType} from "@/types/tab-type";
     import {openRefLink} from "@/utils/ref-util";

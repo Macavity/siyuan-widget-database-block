@@ -57,7 +57,7 @@
     }
 </script>
 
-<div class="fn__flex-wrap">
+<div class="fn__flex fn__flex-wrap">
     {#each attributeRowDtos as item}
         <div
                 class="block__icons av__row"
