@@ -27,38 +27,36 @@ export class SettingsService {
   }
 
   async loadWidgetSettings() {
-    try {
-      this.widgetBlockId = getCurrentWidgetId();
+    this.widgetBlockId = getCurrentWidgetId();
 
-      const blockAttrMap = await getBlockAttrs(this.widgetBlockId);
-      const currentWidgetSettings =
-        JSON.parse(blockAttrMap[WIDGET_SETTING_ATTRIBUTE_NAME]) ?? {};
+    const blockAttrMap = await getBlockAttrs(this.widgetBlockId);
+    const settingsString = blockAttrMap[WIDGET_SETTING_ATTRIBUTE_NAME];
+    const currentWidgetSettings = settingsString
+      ? JSON.parse(settingsString)
+      : {};
 
-      this.widgetSettings = SettingsFactory.createWidgetSettings(
-        this.globalSettings,
-        currentWidgetSettings,
+    this.widgetSettings = SettingsFactory.createWidgetSettings(
+      this.globalSettings,
+      currentWidgetSettings,
+    );
+
+    if (!this.widgetSettings.targetBlockId) {
+      this.widgetSettings.targetBlockId = await getDefaultTargetBlockId(
+        this.globalSettings.defaultGetTargetBlockMethod,
       );
+    }
 
-      if (!this.widgetSettings.targetBlockId) {
-        this.widgetSettings.targetBlockId = await getDefaultTargetBlockId(
-          this.globalSettings.defaultGetTargetBlockMethod,
-        );
-      }
+    // If the attribute does not exist, it means that it is created for the first time and is not collapsed
+    // by default and the configuration is saved.
+    if (currentWidgetSettings) {
+      this.widgetCollapsed = this.widgetSettings.openDocAutoCollapsed;
+    } else {
+      this.widgetCollapsed = false;
 
-      // If the attribute does not exist, it means that it is created for the first time and is not collapsed
-      // by default and the configuration is saved.
-      if (currentWidgetSettings) {
-        this.widgetCollapsed = this.widgetSettings.openDocAutoCollapsed;
-      } else {
-        this.widgetCollapsed = false;
-
-        // Delay the save by 0.5 seconds, as the widget may not be indexed yet and a direct save will fail.
-        setTimeout(() => {
-          this.updateWidgetSettings(this.widgetSettings);
-        }, 500);
-      }
-    } catch {
-      /* empty */
+      // Delay the save by 0.5 seconds, as the widget may not be indexed yet and a direct save will fail.
+      setTimeout(() => {
+        this.updateWidgetSettings(this.widgetSettings);
+      }, 500);
     }
   }
 

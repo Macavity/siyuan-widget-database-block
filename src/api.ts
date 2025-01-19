@@ -341,7 +341,7 @@ export async function getAttributeViewKeys(
 
 export async function getBlockAttrs(
   id: BlockId,
-): Promise<{ [key: string]: string }> {
+): Promise<{ [key: string]: string } | undefined> {
   const data = {
     id: id,
   };
