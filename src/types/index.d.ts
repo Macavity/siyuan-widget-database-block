@@ -131,6 +131,9 @@ interface Window {
     user: unknown;
     ws: unknown;
     languages: {
+      untitled: string | undefined;
+      openBy: string;
+      format: string;
       bookmark: string;
       name: string;
       alias: string;
