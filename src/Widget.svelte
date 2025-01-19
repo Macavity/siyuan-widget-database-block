@@ -13,6 +13,7 @@
     import {processAttributeData} from "@/services/block-database";
     import {openRefLink} from "@/utils/ref-util";
     import {type I18N} from "@/types/i18n";
+    import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
 
     export let i18n: I18N;
 
@@ -101,6 +102,7 @@
     }
 
     async function triggerRefresh() {
+        console.log("triggerRefresh");
         await init();
     }
 
@@ -117,91 +119,23 @@
         settingsService.updateWidgetSettings(settingsService.widgetSettings);
     }
 
-    function clickAttributeTab(
-        event: MouseEvent | KeyboardEvent,
-        tabType: TabType,
-        avId: string,
-    ) {
-        if (tabType != TabType.DATABASE_ATTR_TAB) {
-            return;
-        }
-        avTabClickCount++;
 
-        if (avTabClickCount === 1) {
-            selectTabType = tabType;
-            selectAttributeTabId = avId;
-            settingsService.widgetSettings.lastSelectAvId = avId;
-            settingsService.widgetSettings.lastSelectTabType = tabType;
-            settingsService.updateWidgetSettings(settingsService.widgetSettings);
-            refreshBlockAttributeData();
-            setTimeout(() => {
-                avTabClickCount = 0; // reset count
-            }, 120);
-        }
-        if (
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey ||
-            avTabClickCount === 2
-        ) {
-            let dto: AttributeTable = allTableDtoMap.get(avId);
-            let blockId = dto.blockIds[0];
-            // Open the node where the database exists
-            openRefLink(event, blockId);
-            avTabClickCount = 0;
-        }
-    }
-
-    function onSave(){
+    function onSave() {
         triggerRefresh();
     }
 </script>
 
-<div class="fn__flex">
-    <div class="fn__flex layout-tab-bar" id="top-navigation-bar">
-        <div class="fn__flex-grow">
-            {#each Array.from(allTableDtoMap) as [key, item]}
-                <Button
-                        isFocused={selectTabType === TabType.DATABASE_ATTR_TAB && selectAttributeTabId === key}
-                        on:click={(event) => clickAttributeTab(event.detail.event, TabType.DATABASE_ATTR_TAB, key)}
-                        label={item.avName}
-                />
-            {/each}
-
-            {#if showBuiltInAttr || showCustomAttr}
-                <span class="vertical-separator"></span>
-            {/if}
-
-            {#if showBuiltInAttr}
-                <Button isFocused={selectTabType === TabType.BUILT_IN_ATTR_TAB}
-                        on:click={() => clickTab(TabType.BUILT_IN_ATTR_TAB)}
-                        label={i18n.builtInProperties}/>
-            {/if}
-
-            {#if showCustomAttr}
-                <Button isFocused={selectTabType === TabType.CUSTOM_ATTR_TAB}
-                        on:click={() => clickTab(TabType.CUSTOM_ATTR_TAB)}
-                        label={i18n.customProperties}/>
-            {/if}
-        </div>
-
-        <div class="fn__flex-right">
-            <Button icon="#iconRefresh"
-                    on:click={triggerRefresh}
-                    tooltip={i18n.refresh}/>
-
-            <Button icon={settingsService.widgetCollapsed ? "#iconExpand" : "#iconContract"}
-                    on:click={toggleCollapseTab}
-                    tooltip={settingsService.widgetCollapsed ? i18n.expand : i18n.collapse}/>
-
-            <Button icon="#iconSettings"
-                    isFocused={selectTabType === TabType.SETTINGS_TAB}
-                    on:click={() => clickTab(TabType.SETTINGS_TAB)}
-                    tooltip={i18n.setup}/>
-        </div>
-
-    </div>
-</div>
+<ProtyleBreadcrumb
+        {allTableDtoMap}
+        {i18n}
+        on:collapseToggle={toggleCollapseTab}
+        on:refresh={triggerRefresh}
+        on:tabChange={(e) => clickTab(e.detail.tabType)}
+        {selectAttributeTabId}
+        {selectTabType}
+        {showBuiltInAttr}
+        {showCustomAttr}
+/>
 <div id="main-content-container">
     {#if !settingsService.widgetCollapsed}
         {#if selectTabType === TabType.SETTINGS_TAB}
@@ -221,22 +155,4 @@
 </div>
 
 <style lang="scss">
-  .vertical-separator {
-    border-left: 1px solid #ccc;
-    height: 30px;
-    margin: 6px;
-  }
-
-  .layout-tab-bar {
-    width: 100%;
-  }
-
-  .fn__flex-grow {
-    flex-grow: 1;
-  }
-
-  .fn__flex-right {
-    display: flex;
-    align-items: center;
-  }
 </style>

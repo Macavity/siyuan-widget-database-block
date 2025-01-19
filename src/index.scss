@@ -1,43 +1,15 @@
-:root {
-  // --b3-theme-surface-lighter: #e0e0e0;
-  // --b3-theme-on-surface: #5f6368;
-  // --b3-border-radius: 6px;
-  // --b3-transition: all .2s cubic-bezier(0, 0, .2, 1) 0ms;
-  // --b3-list-hover: rgba(0, 0, 0, .075);
-  // --b3-list-icon-hover: rgba(33, 34, 36, .1);
-  /* 定义颜色变量 */
-}
+@import "siyuan-app/app/src/assets/scss/util/keyframes";
+@import "siyuan-app/app/src/assets/scss/util/mixin";
+@import "siyuan-app/app/src/assets/scss/util/reset";
+@import "siyuan-app/app/src/assets/scss/util/function";
+@import "siyuan-app/app/src/assets/scss/protyle/protyle";
+@import "siyuan-app/app/src/assets/scss/component/switch";
 
-html {
-  position: static;
-}
-
-body {
-  text-rendering: optimizeLegibility;
-  margin: 0;
-  font-family: var(--b3-font-family);
-  font-size: 14px;
-  color: var(--b3-theme-on-background);
-  // background-color: var(--b3-theme-background);
-  -webkit-font-smoothing: antialiased;
-  -webkit-overflow-scrolling: touch;
-  height: 100%;
-  box-sizing: border-box;
-  max-height: 100%;
-  // overflow: hidden;
-  // background-color: transparent;
-}
 
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
 }
-
-
-.fn__flex {
-  display: flex;
-}
-
 
 .fn__flex-1 {
   flex: 1;
@@ -45,6 +17,13 @@ body {
   overflow: auto;
   min-height: .1px;
 }
+
+.flex_center {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 
 .block__logoicon {
   margin-right: 4px;
@@ -56,12 +35,6 @@ body {
 
 .block__logoicon.custom-emoji {
   height: auto;
-}
-
-
-svg {
-  fill: currentColor;
-  display: inline-block;
 }
 
 svg:not(:root) {
@@ -86,6 +59,7 @@ element.style {
   background-color: var(--b3-font-background8);
   color: var(--b3-font-color8);
 }
+
 
 
 .b3-chip {
@@ -303,89 +277,10 @@ ul {
   height: 100%;
 }
 
-button,
-input {
-  line-height: normal;
-}
+
 
 .fn__flex-center {
   align-self: center;
-}
-
-.b3-switch:checked:before,
-.b3-switch:checked:after {
-  transform: translateX(19px);
-  transition: transform .6s cubic-bezier(0.2, 0.85, 0.32, 1.2), opacity .3s;
-}
-
-.b3-switch:after {
-  border: 1px solid var(--b3-theme-surface-lighter);
-  box-shadow: var(--b3-point-shadow);
-  box-sizing: border-box;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-  content: "";
-  background-color: #fff;
-  left: -4px;
-  top: -3px;
-  display: block;
-  position: absolute;
-  transition: transform .3s ease, opacity .2s;
-}
-
-.b3-switch::after {
-  top: 1px;
-  left: 1px;
-  background-color: #fff;
-  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, .2);
-  border: none;
-}
-
-.b3-switch {
-  flex-shrink: 0;
-  -webkit-appearance: none;
-  box-sizing: border-box;
-  width: 28px;
-  height: 12px;
-  border: 1px solid rgba(0, 0, 0, 0);
-  border-radius: var(--b3-border-radius-b);
-  margin: 0;
-  outline: none;
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  background-color: var(--b3-theme-surface-lighter);
-  overflow: inherit;
-  user-select: none;
-}
-
-.b3-switch {
-  height: 20px;
-  width: 32px;
-  transition-property: background-color, filter;
-  transition-duration: 0.3s;
-  box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0);
-  background-color: rgba(127, 127, 127, 0.4);
-}
-
-.b3-switch:checked {
-  background-color: var(--b3-theme-primary-light);
-}
-
-.b3-switch:checked:before,
-.b3-switch:checked:after {
-  transform: translateX(19px);
-  transition: transform .6s cubic-bezier(0.2, 0.85, 0.32, 1.2), opacity .3s;
-}
-
-.b3-switch:checked::after {
-  transform: translateX(12px);
-  background-color: #fff;
-  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, .2);
 }
 
 .av__celltext--ref {
