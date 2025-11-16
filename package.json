@@ -30,7 +30,7 @@
     "fast-glob": "^3.2.12",
     "glob": "^10.0.0",
     "globals": "^15.14.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "minimist": "^1.2.8",
     "prettier": "^3.4.2",
     "rollup-plugin-livereload": "^2.0.5",
